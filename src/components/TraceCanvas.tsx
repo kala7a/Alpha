@@ -3,8 +3,12 @@ import KidButton from './KidButton'
 
 const SIZE = 320
 const INK_WIDTH = 26
-const DILATE_STEPS = [-14, -7, 0, 7, 14]
-const DONE_THRESHOLD = 0.55
+// How far (px) to look for nearby ink when checking whether a point on the
+// letter got covered — this is the tolerance for imprecise strokes. Applied
+// to the ink side of the comparison, not the target: the target stays the
+// real letter shape, so 100% is actually reachable by a full, careful trace.
+const HIT_TOLERANCE = [-10, -5, 0, 5, 10]
+const DONE_THRESHOLD = 0.7
 const MIN_TO_FINISH = 0.15
 
 interface Props {
@@ -18,7 +22,8 @@ export interface TraceCanvasHandle {
   clear: () => void
 }
 
-function buildMask(letter: string): { indices: Uint32Array; imageData: ImageData } {
+/** Pixel indices (x + y*SIZE, not byte offsets) making up the real, undilated letter shape. */
+function buildMask(letter: string): Uint32Array {
   const off = document.createElement('canvas')
   off.width = SIZE
   off.height = SIZE
@@ -28,19 +33,13 @@ function buildMask(letter: string): { indices: Uint32Array; imageData: ImageData
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
   ctx.font = `700 ${SIZE * 0.72}px "Baloo 2", sans-serif`
-  const cx = SIZE / 2
-  const cy = SIZE / 2 + SIZE * 0.04
-  for (const dx of DILATE_STEPS) {
-    for (const dy of DILATE_STEPS) {
-      ctx.fillText(letter, cx + dx, cy + dy)
-    }
-  }
-  const imageData = ctx.getImageData(0, 0, SIZE, SIZE)
+  ctx.fillText(letter, SIZE / 2, SIZE / 2 + SIZE * 0.04)
+  const { data } = ctx.getImageData(0, 0, SIZE, SIZE)
   const indices: number[] = []
-  for (let i = 0; i < imageData.data.length; i += 4) {
-    if (imageData.data[i + 3] > 40) indices.push(i)
+  for (let i = 0; i < data.length; i += 4) {
+    if (data[i + 3] > 40) indices.push(i / 4)
   }
-  return { indices: Uint32Array.from(indices), imageData }
+  return Uint32Array.from(indices)
 }
 
 /** Draws the light guide letter behind whatever ink the child has painted so far. */
@@ -74,7 +73,7 @@ export default function TraceCanvas({ letter, resetKey, onCoverageChange }: Prop
     ink.height = SIZE
     inkCanvasRef.current = ink
 
-    maskRef.current = buildMask(letter).indices
+    maskRef.current = buildMask(letter)
     setHasInk(false)
     onCoverageChange(0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -84,11 +83,29 @@ export default function TraceCanvas({ letter, resetKey, onCoverageChange }: Prop
     const ink = inkCanvasRef.current
     const mask = maskRef.current
     if (!ink || mask.length === 0) return 0
-    const ctx = ink.getContext('2d')!
-    const data = ctx.getImageData(0, 0, SIZE, SIZE).data
+    const data = ink.getContext('2d')!.getImageData(0, 0, SIZE, SIZE).data
     let covered = 0
     for (let i = 0; i < mask.length; i++) {
-      if (data[mask[i] + 3] > 40) covered++
+      const px = mask[i]
+      const x = px % SIZE
+      const y = (px / SIZE) | 0
+      for (const dy of HIT_TOLERANCE) {
+        const ny = y + dy
+        if (ny < 0 || ny >= SIZE) continue
+        let hit = false
+        for (const dx of HIT_TOLERANCE) {
+          const nx = x + dx
+          if (nx < 0 || nx >= SIZE) continue
+          if (data[(ny * SIZE + nx) * 4 + 3] > 40) {
+            hit = true
+            break
+          }
+        }
+        if (hit) {
+          covered++
+          break
+        }
+      }
     }
     return covered / mask.length
   }
