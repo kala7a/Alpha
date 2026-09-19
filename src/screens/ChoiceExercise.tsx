@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { BgLetter } from '../data/letters'
 import { useSpeech } from '../hooks/useSpeech'
 import { useSoundEffects } from '../hooks/useSoundEffects'
+import KidButton from '../components/KidButton'
 
 interface Props {
   letter: BgLetter
@@ -42,22 +43,22 @@ export default function ChoiceExercise({ letter, options, onComplete }: Props) {
     <div className="flex flex-1 flex-col items-center gap-6 px-6 py-4">
       <p className="text-center text-xl font-bold text-violet-800">Коя буква чуваш? 👂</p>
 
-      <button
-        onClick={() => speak(letter.speechText)}
+      <KidButton
+        onPress={() => speak(letter.speechText)}
         disabled={!supported}
         className="animate-wiggle flex h-28 w-28 items-center justify-center rounded-full bg-white text-5xl shadow-lg active:scale-95 disabled:opacity-50"
       >
         🔊
-      </button>
+      </KidButton>
 
       <div className="grid w-full max-w-xs grid-cols-2 gap-4">
         {options.map((opt) => {
           const isWrong = wrongPicks.has(opt.letter)
           const isPicked = picked === opt.letter
           return (
-            <button
+            <KidButton
               key={opt.letter}
-              onClick={() => handlePick(opt)}
+              onPress={() => handlePick(opt)}
               disabled={picked !== null || isWrong}
               className={`aspect-square rounded-3xl text-6xl font-extrabold shadow-md transition active:scale-95 ${
                 isPicked
@@ -68,7 +69,7 @@ export default function ChoiceExercise({ letter, options, onComplete }: Props) {
               } ${shakeKey === opt.letter ? 'animate-shake' : ''}`}
             >
               {opt.letter}
-            </button>
+            </KidButton>
           )
         })}
       </div>

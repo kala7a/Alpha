@@ -24,9 +24,16 @@ body {
  * So this has to explicitly exclude canvas, or it silently beats the
  * `touch-none` utility on the tracing canvas and breaks continuous drawing
  * on touch devices (the browser treats the drag as a page-scroll gesture).
+ *
+ * pan-y (not manipulation) on purpose: `manipulation` still lets the browser
+ * treat two simultaneous touches as a possible pinch-zoom gesture while it
+ * decides, which can swallow a child's tap entirely if a second, stray
+ * finger (sibling's hand, a resting palm) touches the screen at the same
+ * moment. This app never needs pinch-zoom, so pan-y (vertical scroll only,
+ * for the rare overflow fallback) removes that gesture-recognition delay.
  */
 *:not(canvas) {
-  touch-action: manipulation;
+  touch-action: pan-y;
 }
 
 @keyframes pop-in {

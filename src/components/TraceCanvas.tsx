@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import KidButton from './KidButton'
 
 const SIZE = 320
 const INK_WIDTH = 26
@@ -152,7 +153,7 @@ export default function TraceCanvas({ letter, resetKey, onCoverageChange }: Prop
     <div className="flex flex-col items-center gap-3">
       <canvas
         ref={canvasRef}
-        className="aspect-square w-full max-w-xs touch-none rounded-3xl bg-white shadow-inner"
+        className="aspect-square w-full max-w-xs max-h-[36vh] touch-none rounded-3xl bg-white shadow-inner"
         style={{ touchAction: 'none' }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
@@ -161,12 +162,12 @@ export default function TraceCanvas({ letter, resetKey, onCoverageChange }: Prop
         onPointerCancel={handlePointerUp}
       />
       {hasInk && (
-        <button
-          onClick={handleClear}
+        <KidButton
+          onPress={handleClear}
           className="rounded-full bg-white/70 px-5 py-2 text-sm font-bold text-violet-700 shadow active:scale-95"
         >
           ↺ Изчисти
-        </button>
+        </KidButton>
       )}
     </div>
   )
