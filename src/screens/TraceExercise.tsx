@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import TraceCanvas, { DONE_THRESHOLD, MIN_TO_FINISH } from '../components/TraceCanvas'
 import KidButton from '../components/KidButton'
-import type { BgLetter } from '../data/letters'
+import { pickWordOption, type BgLetter } from '../data/letters'
 import { buildSpokenPhrase } from '../data/spokenPhrase'
 import { useSpeech } from '../hooks/useSpeech'
 import { useSoundEffects } from '../hooks/useSoundEffects'
@@ -18,7 +18,8 @@ export default function TraceExercise({ letter, onComplete }: Props) {
   const [finished, setFinished] = useState(false)
   // Picked once per letter so the auto-play and any replay taps within the
   // same round say the same thing, instead of switching phrasing mid-round.
-  const phrase = useMemo(() => buildSpokenPhrase(letter), [letter])
+  const word = useMemo(() => pickWordOption(letter), [letter])
+  const phrase = useMemo(() => buildSpokenPhrase(letter, word), [letter, word])
 
   useEffect(() => {
     setFinished(false)
@@ -65,8 +66,8 @@ export default function TraceExercise({ letter, onComplete }: Props) {
       </div>
 
       <p className="flex items-center gap-2 text-base font-semibold text-violet-900">
-        <span className="text-xl">{letter.emoji}</span>
-        {letter.word}
+        <span className="text-xl">{word.emoji}</span>
+        {word.word}
       </p>
 
       {finished ? (

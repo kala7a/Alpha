@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { BgLetter } from '../data/letters'
+import { pickWordOption, type BgLetter } from '../data/letters'
 import { buildWordPhrase } from '../data/spokenPhrase'
 import { useSpeech } from '../hooks/useSpeech'
 import { useSoundEffects } from '../hooks/useSoundEffects'
@@ -17,7 +17,8 @@ export default function WordExercise({ letter, options, onComplete }: Props) {
   const [picked, setPicked] = useState<string | null>(null)
   const [wrongPicks, setWrongPicks] = useState<Set<string>>(new Set())
   const [shakeKey, setShakeKey] = useState<string | null>(null)
-  const phrase = useMemo(() => buildWordPhrase(letter), [letter])
+  const word = useMemo(() => pickWordOption(letter), [letter])
+  const phrase = useMemo(() => buildWordPhrase(word), [word])
 
   useEffect(() => {
     setPicked(null)
@@ -52,7 +53,7 @@ export default function WordExercise({ letter, options, onComplete }: Props) {
           picked ? 'animate-pop h-56 w-56 text-9xl' : 'h-24 w-24 animate-wiggle text-4xl'
         }`}
       >
-        {letter.emoji}
+        {word.emoji}
       </KidButton>
 
       <div className="grid w-full max-w-xs grid-cols-2 gap-5">
@@ -80,7 +81,7 @@ export default function WordExercise({ letter, options, onComplete }: Props) {
 
       {picked && (
         <p className="animate-pop text-2xl font-extrabold text-emerald-600">
-          {letter.word} започва с {letter.letter}! 🎉
+          {word.word} започва с {letter.letter}! 🎉
         </p>
       )}
     </div>
