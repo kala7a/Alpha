@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { BgLetter } from '../data/letters'
+import { buildSpokenPhrase } from '../data/spokenPhrase'
 import { useSpeech } from '../hooks/useSpeech'
 import { useSoundEffects } from '../hooks/useSoundEffects'
 import KidButton from '../components/KidButton'
@@ -16,14 +17,17 @@ export default function ChoiceExercise({ letter, options, onComplete }: Props) {
   const [picked, setPicked] = useState<string | null>(null)
   const [wrongPicks, setWrongPicks] = useState<Set<string>>(new Set())
   const [shakeKey, setShakeKey] = useState<string | null>(null)
+  // Picked once per letter so the auto-play and any replay taps within the
+  // same round say the same thing, instead of switching phrasing mid-round.
+  const phrase = useMemo(() => buildSpokenPhrase(letter), [letter])
 
   useEffect(() => {
     setPicked(null)
     setWrongPicks(new Set())
-    const t = setTimeout(() => speak(letter.speechText), 400)
+    const t = setTimeout(() => speak(phrase), 400)
     return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [letter])
+  }, [letter, phrase])
 
   function handlePick(opt: BgLetter) {
     if (picked) return
@@ -44,7 +48,7 @@ export default function ChoiceExercise({ letter, options, onComplete }: Props) {
       <p className="text-center text-xl font-bold text-violet-800">Коя буква чуваш? 👂</p>
 
       <KidButton
-        onPress={() => speak(letter.speechText)}
+        onPress={() => speak(phrase)}
         disabled={!supported}
         className="animate-wiggle flex h-28 w-28 items-center justify-center rounded-full bg-white text-5xl shadow-lg active:scale-95 disabled:opacity-50"
       >

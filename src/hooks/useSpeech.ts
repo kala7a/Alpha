@@ -33,22 +33,7 @@ export function useSpeech() {
       // synth) makes the clipped-onset bug below worse, not better.
       if (synth.speaking || synth.pending) synth.cancel()
 
-      // Chrome (and some other engines) reliably clip roughly the first
-      // 100-200ms of an utterance's audio. For long words that's barely
-      // noticeable, but Bulgarian letter names like "ръ"/"бъ"/"гъ" are two
-      // sounds total, so the clipped fraction is the entire leading
-      // consonant — it comes out sounding like just the trailing "ъ".
-      // Speaking the sound twice means a clipped first repetition doesn't
-      // matter: the clean second one still gets heard, and — unlike an
-      // arbitrary filler word — repeating the actual target sound can't
-      // teach the wrong thing if a bit of both repetitions comes through.
-      //
-      // A previous version of this also called pause()+resume() on start
-      // as a second workaround for the same bug — that's a commonly cited
-      // Chrome-desktop fix, but it's flaky on other engines (notably
-      // mobile), where it can leave the utterance permanently stuck
-      // paused instead of helping, killing audio entirely. Not worth it.
-      const utterance = new SpeechSynthesisUtterance(`${text}, ${text}`)
+      const utterance = new SpeechSynthesisUtterance(text)
       utterance.lang = 'bg-BG'
       utterance.rate = 0.8
       utterance.pitch = 1.1
@@ -61,5 +46,20 @@ export function useSpeech() {
     [voice],
   )
 
-  return { speak, speaking, supported, hasBulgarianVoice: voice !== null }
+  const warmUp = useCallback(() => {
+    if (!supported) return
+    // Speech engines (Chrome on Android especially) are noticeably more
+    // prone to clipping/dropping the very first utterance after a cold
+    // start. Queuing an inaudible one right on a user gesture (the play
+    // button) gets the engine spun up before the first real letter sound
+    // is due, a few hundred ms later.
+    const synth = window.speechSynthesis
+    const utterance = new SpeechSynthesisUtterance('.')
+    utterance.volume = 0
+    utterance.lang = 'bg-BG'
+    if (voice) utterance.voice = voice
+    synth.speak(utterance)
+  }, [voice])
+
+  return { speak, warmUp, speaking, supported, hasBulgarianVoice: voice !== null }
 }

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import TraceCanvas, { DONE_THRESHOLD, MIN_TO_FINISH } from '../components/TraceCanvas'
 import KidButton from '../components/KidButton'
 import type { BgLetter } from '../data/letters'
+import { buildSpokenPhrase } from '../data/spokenPhrase'
 import { useSpeech } from '../hooks/useSpeech'
 import { useSoundEffects } from '../hooks/useSoundEffects'
 
@@ -15,14 +16,17 @@ export default function TraceExercise({ letter, onComplete }: Props) {
   const { playCorrect } = useSoundEffects()
   const [coverage, setCoverage] = useState(0)
   const [finished, setFinished] = useState(false)
+  // Picked once per letter so the auto-play and any replay taps within the
+  // same round say the same thing, instead of switching phrasing mid-round.
+  const phrase = useMemo(() => buildSpokenPhrase(letter), [letter])
 
   useEffect(() => {
     setFinished(false)
     setCoverage(0)
-    const t = setTimeout(() => speak(letter.speechText), 400)
+    const t = setTimeout(() => speak(phrase), 400)
     return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [letter])
+  }, [letter, phrase])
 
   const great = coverage >= DONE_THRESHOLD
   const canFinish = coverage >= MIN_TO_FINISH
@@ -40,7 +44,7 @@ export default function TraceExercise({ letter, onComplete }: Props) {
       <p className="text-center text-lg font-bold text-violet-800">Обиколи буквата с пръст ✍️</p>
 
       <KidButton
-        onPress={() => speak(letter.speechText)}
+        onPress={() => speak(phrase)}
         disabled={!supported}
         className="flex items-center gap-2 rounded-full bg-white px-5 py-2 text-xl font-extrabold text-violet-700 shadow-md active:scale-95 disabled:opacity-50"
       >

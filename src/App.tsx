@@ -9,7 +9,15 @@ type Screen = { name: 'home' } | { name: 'session'; rounds: number } | { name: '
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
-  const { supported, hasBulgarianVoice } = useSpeech()
+  const { supported, hasBulgarianVoice, warmUp } = useSpeech()
+
+  function startSession(rounds: number) {
+    // Fired on the same tap that starts the session — the user gesture
+    // this needs, and enough head start before the first letter sound is
+    // due a few hundred ms later once the round screen has mounted.
+    warmUp()
+    setScreen({ name: 'session', rounds })
+  }
 
   let content
   if (screen.name === 'session') {
@@ -24,14 +32,14 @@ export default function App() {
       <ResultsScreen
         correct={screen.correct}
         total={screen.total}
-        onPlayAgain={() => setScreen({ name: 'session', rounds: screen.total })}
+        onPlayAgain={() => startSession(screen.total)}
         onHome={() => setScreen({ name: 'home' })}
       />
     )
   } else {
     content = (
       <HomeScreen
-        onStart={(rounds) => setScreen({ name: 'session', rounds })}
+        onStart={startSession}
         speechSupported={supported}
         hasBulgarianVoice={hasBulgarianVoice}
       />
