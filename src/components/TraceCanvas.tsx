@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import KidButton from './KidButton'
 
 const SIZE = 320
 const INK_WIDTH = 26
@@ -161,12 +162,12 @@ export default function TraceCanvas({ letter, resetKey, onCoverageChange }: Prop
         onPointerCancel={handlePointerUp}
       />
       {hasInk && (
-        <button
-          onClick={handleClear}
+        <KidButton
+          onPress={handleClear}
           className="rounded-full bg-white/70 px-5 py-2 text-sm font-bold text-violet-700 shadow active:scale-95"
         >
           ↺ Изчисти
-        </button>
+        </KidButton>
       )}
     </div>
   )

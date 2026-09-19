@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import KidButton from '../components/KidButton'
 
 const LENGTH_OPTIONS = [
   { rounds: 6, label: 'Кратка' },
@@ -55,9 +56,9 @@ export default function HomeScreen({ onStart, speechSupported, hasBulgarianVoice
 
         <div className="flex w-full justify-center gap-3">
           {LENGTH_OPTIONS.map((opt) => (
-            <button
+            <KidButton
               key={opt.rounds}
-              onClick={() => setRounds(opt.rounds)}
+              onPress={() => setRounds(opt.rounds)}
               className={`flex-1 rounded-2xl px-3 py-3 text-lg font-bold shadow-md transition active:scale-95 ${
                 rounds === opt.rounds
                   ? 'bg-white text-violet-600 ring-4 ring-white/60'
@@ -66,16 +67,16 @@ export default function HomeScreen({ onStart, speechSupported, hasBulgarianVoice
             >
               {opt.label}
               <div className="text-sm font-medium opacity-80">{opt.rounds} букви</div>
-            </button>
+            </KidButton>
           ))}
         </div>
 
-        <button
-          onClick={() => onStart(rounds)}
+        <KidButton
+          onPress={() => onStart(rounds)}
           className="w-full rounded-full bg-yellow-300 px-10 py-5 text-3xl font-extrabold text-violet-700 shadow-[0_8px_0_0_rgba(180,120,0,0.5)] transition active:translate-y-1 active:shadow-[0_3px_0_0_rgba(180,120,0,0.5)]"
         >
           ▶ ИГРАЙ
-        </button>
+        </KidButton>
       </div>
     </div>
   )

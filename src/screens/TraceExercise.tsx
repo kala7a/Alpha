@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import TraceCanvas, { DONE_THRESHOLD, MIN_TO_FINISH } from '../components/TraceCanvas'
+import KidButton from '../components/KidButton'
 import type { BgLetter } from '../data/letters'
 import { useSpeech } from '../hooks/useSpeech'
 import { useSoundEffects } from '../hooks/useSoundEffects'
@@ -38,13 +39,13 @@ export default function TraceExercise({ letter, onComplete }: Props) {
     <div className="flex min-h-full flex-1 flex-col items-center gap-2 px-6 py-2">
       <p className="text-center text-lg font-bold text-violet-800">Обиколи буквата с пръст ✍️</p>
 
-      <button
-        onClick={() => speak(letter.speechText)}
+      <KidButton
+        onPress={() => speak(letter.speechText)}
         disabled={!supported}
         className="flex items-center gap-2 rounded-full bg-white px-5 py-2 text-xl font-extrabold text-violet-700 shadow-md active:scale-95 disabled:opacity-50"
       >
         🔊 {letter.letter}
-      </button>
+      </KidButton>
 
       <div className="flex w-full flex-1 items-center justify-center py-1">
         <TraceCanvas letter={letter.letter} resetKey={0} onCoverageChange={setCoverage} />
@@ -69,13 +70,13 @@ export default function TraceExercise({ letter, onComplete }: Props) {
           {great ? 'Страхотно! 🎉' : 'Браво, опита се! 🙌'}
         </p>
       ) : (
-        <button
-          onClick={handleFinish}
+        <KidButton
+          onPress={handleFinish}
           disabled={!canFinish}
           className="w-full max-w-xs shrink-0 rounded-full bg-emerald-400 px-8 py-3 text-xl font-extrabold text-emerald-900 shadow-[0_6px_0_0_rgba(6,95,70,0.4)] transition active:translate-y-1 active:shadow-[0_2px_0_0_rgba(6,95,70,0.4)] disabled:opacity-40 disabled:active:translate-y-0"
         >
           Готово ✓
-        </button>
+        </KidButton>
       )}
     </div>
   )

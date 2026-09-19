@@ -1,3 +1,5 @@
+import KidButton from '../components/KidButton'
+
 interface Props {
   correct: number
   total: number
@@ -40,18 +42,18 @@ export default function ResultsScreen({ correct, total, onPlayAgain, onHome }: P
       </p>
 
       <div className="flex w-full max-w-xs flex-col gap-3">
-        <button
-          onClick={onPlayAgain}
+        <KidButton
+          onPress={onPlayAgain}
           className="rounded-full bg-yellow-300 px-8 py-4 text-2xl font-extrabold text-teal-700 shadow-[0_6px_0_0_rgba(180,120,0,0.5)] transition active:translate-y-1 active:shadow-[0_2px_0_0_rgba(180,120,0,0.5)]"
         >
           🔁 Играй пак
-        </button>
-        <button
-          onClick={onHome}
+        </KidButton>
+        <KidButton
+          onPress={onHome}
           className="rounded-full bg-white/80 px-8 py-3 text-xl font-bold text-teal-700 shadow active:scale-95"
         >
           🏠 Начало
-        </button>
+        </KidButton>
       </div>
     </div>
   )
