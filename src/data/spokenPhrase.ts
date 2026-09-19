@@ -13,3 +13,8 @@ export function buildSpokenPhrase(letter: BgLetter): string {
   const variants = [`Буквата ${letter.speechText}`, `${letter.word} започва с ${letter.speechText}`]
   return variants[Math.floor(Math.random() * variants.length)]
 }
+
+/** For the "which letter does this word start with?" exercise. */
+export function buildWordPhrase(letter: BgLetter): string {
+  return `Думата ${letter.word}`
+}

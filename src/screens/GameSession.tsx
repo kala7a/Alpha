@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { buildSession } from '../data/session'
 import TraceExercise from './TraceExercise'
 import ChoiceExercise from './ChoiceExercise'
+import WordExercise from './WordExercise'
 
 interface Props {
   roundCount: number
@@ -40,10 +41,12 @@ export default function GameSession({ roundCount, onFinish }: Props) {
       </div>
 
       <div key={index} className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-        {exercise.type === 'trace' ? (
-          <TraceExercise letter={exercise.letter} onComplete={handleRoundComplete} />
-        ) : (
+        {exercise.type === 'trace' && <TraceExercise letter={exercise.letter} onComplete={handleRoundComplete} />}
+        {exercise.type === 'choice' && (
           <ChoiceExercise letter={exercise.letter} options={exercise.options} onComplete={handleRoundComplete} />
+        )}
+        {exercise.type === 'word' && (
+          <WordExercise letter={exercise.letter} options={exercise.options} onComplete={handleRoundComplete} />
         )}
       </div>
     </div>

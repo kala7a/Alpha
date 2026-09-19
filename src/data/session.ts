@@ -1,9 +1,13 @@
 import { ALPHABET, type BgLetter } from './letters'
-import type { ChoiceExercise, Exercise, TraceExercise } from '../types'
+import type { ChoiceExercise, Exercise, TraceExercise, WordExercise } from '../types'
 
 // Letters kept out of the "listen and choose" pool: their names are too similar
 // to neighbors for a 5-year-old to reliably tell apart by ear alone.
 const CHOICE_EXCLUDED = new Set(['Ь'])
+
+// Letters with no real associated word (Ь's "word" is just its own name again),
+// so they can't be the answer in a "which letter does this word start with?" round.
+const WORD_EXCLUDED = new Set(['Ь'])
 
 function shuffle<T>(items: T[]): T[] {
   const arr = [...items]
@@ -22,16 +26,27 @@ function pickOptions(correct: BgLetter, pool: BgLetter[], count: number): BgLett
 export function buildSession(roundCount: number): Exercise[] {
   const letters = shuffle(ALPHABET).slice(0, roundCount)
   const choicePool = ALPHABET.filter((l) => !CHOICE_EXCLUDED.has(l.letter))
+  const wordPool = ALPHABET.filter((l) => !WORD_EXCLUDED.has(l.letter))
 
-  return letters.map((letter, i): Exercise => {
-    // Alternate exercise types so both kinds show up in every session,
-    // with a little randomness so it's not perfectly predictable.
-    const useChoice = i % 2 === 0 ? Math.random() < 0.75 : Math.random() < 0.25
-    if (useChoice) {
+  return letters.map((letter): Exercise => {
+    // Roughly even three-way mix, so tracing, listen-and-pick and
+    // word-first-letter rounds all show up across a session.
+    const roll = Math.random()
+    const type = roll < 1 / 3 ? 'trace' : roll < 2 / 3 ? 'choice' : 'word'
+
+    if (type === 'choice') {
       const exercise: ChoiceExercise = {
         type: 'choice',
         letter,
         options: pickOptions(letter, choicePool, 4),
+      }
+      return exercise
+    }
+    if (type === 'word' && !WORD_EXCLUDED.has(letter.letter)) {
+      const exercise: WordExercise = {
+        type: 'word',
+        letter,
+        options: pickOptions(letter, wordPool, 2),
       }
       return exercise
     }
