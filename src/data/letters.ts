@@ -225,7 +225,12 @@ export const ALPHABET: BgLetter[] = [
   },
   {
     letter: 'Ш',
-    speechText: 'шъ',
+    // Spelled as the bare letter, not "шъ" like its neighbors: reported as
+    // coming out sounding like "ши" — "шъ" isn't a common Bulgarian
+    // syllable while "ши" is, so the speech engine seems to snap to that
+    // instead. The bare letter falls back to the engine's own (presumably
+    // correct) name for it.
+    speechText: 'ш',
     words: [
       { word: 'шапка', emoji: '🎩' },
       { word: 'шоколад', emoji: '🍫' },
