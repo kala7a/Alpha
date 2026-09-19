@@ -44,7 +44,9 @@ export default function HomeScreen({ onStart, speechSupported, hasBulgarianVoice
       ))}
 
       <div className="animate-pop">
-        <div className="text-8xl drop-shadow-lg">🦉</div>
+        <div className="flex h-32 w-32 items-center justify-center rounded-full bg-white text-7xl font-extrabold text-violet-600 shadow-lg">
+          А
+        </div>
       </div>
 
       <div className="z-10 flex flex-col items-center gap-2">
