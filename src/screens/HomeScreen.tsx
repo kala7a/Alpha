@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import KidButton from '../components/KidButton'
+import { useFullscreen } from '../hooks/useFullscreen'
+import { useInstallPrompt } from '../hooks/useInstallPrompt'
 
 const LENGTH_OPTIONS = [
   { rounds: 6, label: 'Кратка' },
@@ -17,6 +19,14 @@ interface Props {
 
 export default function HomeScreen({ onStart, speechSupported, hasBulgarianVoice }: Props) {
   const [rounds, setRounds] = useState(10)
+  const { supported: fsSupported, isFullscreen, enter: enterFullscreen } = useFullscreen()
+  const { canInstall, promptInstall } = useInstallPrompt()
+  const [fsMessage, setFsMessage] = useState<string | null>(null)
+
+  async function handleFullscreen() {
+    const ok = await enterFullscreen()
+    setFsMessage(ok ? null : 'Не проработи тук — виж „Добави към начален екран“ в менюто на браузъра, това работи сигурно.')
+  }
 
   return (
     <div className="relative flex min-h-dvh flex-col items-center justify-between overflow-hidden bg-gradient-to-b from-violet-500 via-fuchsia-500 to-orange-400 px-6 py-10 text-center">
@@ -77,6 +87,28 @@ export default function HomeScreen({ onStart, speechSupported, hasBulgarianVoice
         >
           ▶ ИГРАЙ
         </KidButton>
+
+        {(canInstall || (fsSupported && !isFullscreen)) && (
+          <div className="flex w-full justify-center gap-2">
+            {canInstall && (
+              <KidButton
+                onPress={promptInstall}
+                className="flex-1 rounded-full bg-white/25 px-3 py-2 text-sm font-bold text-white active:scale-95"
+              >
+                📲 Инсталирай
+              </KidButton>
+            )}
+            {fsSupported && !isFullscreen && (
+              <KidButton
+                onPress={handleFullscreen}
+                className="flex-1 rounded-full bg-white/25 px-3 py-2 text-sm font-bold text-white active:scale-95"
+              >
+                ⛶ Цял екран
+              </KidButton>
+            )}
+          </div>
+        )}
+        {fsMessage && <p className="rounded-2xl bg-white/90 px-4 py-2 text-sm font-semibold text-violet-700">{fsMessage}</p>}
       </div>
     </div>
   )
