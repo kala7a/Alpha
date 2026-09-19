@@ -42,18 +42,18 @@ export function useSpeech() {
       // matter: the clean second one still gets heard, and — unlike an
       // arbitrary filler word — repeating the actual target sound can't
       // teach the wrong thing if a bit of both repetitions comes through.
-      // Pausing+resuming immediately on start is a second, independent
-      // workaround for the same underlying bug.
+      //
+      // A previous version of this also called pause()+resume() on start
+      // as a second workaround for the same bug — that's a commonly cited
+      // Chrome-desktop fix, but it's flaky on other engines (notably
+      // mobile), where it can leave the utterance permanently stuck
+      // paused instead of helping, killing audio entirely. Not worth it.
       const utterance = new SpeechSynthesisUtterance(`${text}, ${text}`)
       utterance.lang = 'bg-BG'
       utterance.rate = 0.8
       utterance.pitch = 1.1
       if (voice) utterance.voice = voice
-      utterance.onstart = () => {
-        setSpeaking(true)
-        synth.pause()
-        synth.resume()
-      }
+      utterance.onstart = () => setSpeaking(true)
       utterance.onend = () => setSpeaking(false)
       utterance.onerror = () => setSpeaking(false)
       synth.speak(utterance)
