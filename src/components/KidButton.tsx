@@ -1,4 +1,4 @@
-import { useRef, type ButtonHTMLAttributes } from 'react'
+import type { ButtonHTMLAttributes } from 'react'
 
 interface Props extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
   onPress: () => void
@@ -14,24 +14,29 @@ interface Props extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>
  * on pointerdown sidesteps both.
  *
  * onClick is kept as a fallback purely for keyboard activation (Enter/Space
- * dispatches a click, not a pointerdown) — a `firedAt` guard stops it from
- * double-firing after a pointerdown already handled the same touch/click.
+ * dispatches a click with `detail: 0`; every real pointer-originated click
+ * has `detail >= 1`), which onPointerDown above already fully handles. This
+ * distinction matters, not just as a double-fire guard: when a press swaps
+ * the whole screen (e.g. "Начало" going back to the home screen), the
+ * browser still dispatches the trailing click afterward, and it lands on
+ * whatever element the newly-rendered screen now has at that same
+ * position — a *different* button than the one the finger touched down on,
+ * with no shared state to guard against it. Only ever acting on real
+ * pointer input inside onPointerDown, and never treating a `detail >= 1`
+ * click as an independent action, closes that hole entirely.
  */
 export default function KidButton({ onPress, disabled, ...rest }: Props) {
-  const firedAtRef = useRef(0)
-
   return (
     <button
       {...rest}
       disabled={disabled}
       onPointerDown={(e) => {
         if (disabled) return
-        firedAtRef.current = Date.now()
         e.preventDefault()
         onPress()
       }}
-      onClick={() => {
-        if (disabled || Date.now() - firedAtRef.current < 500) return
+      onClick={(e) => {
+        if (disabled || e.detail !== 0) return
         onPress()
       }}
     />
