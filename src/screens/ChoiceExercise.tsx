@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { BgLetter } from '../data/letters'
+import { pickWordOption, type BgLetter } from '../data/letters'
 import { buildSpokenPhrase } from '../data/spokenPhrase'
 import { useSpeech } from '../hooks/useSpeech'
 import { useSoundEffects } from '../hooks/useSoundEffects'
@@ -19,7 +19,8 @@ export default function ChoiceExercise({ letter, options, onComplete }: Props) {
   const [shakeKey, setShakeKey] = useState<string | null>(null)
   // Picked once per letter so the auto-play and any replay taps within the
   // same round say the same thing, instead of switching phrasing mid-round.
-  const phrase = useMemo(() => buildSpokenPhrase(letter), [letter])
+  const word = useMemo(() => pickWordOption(letter), [letter])
+  const phrase = useMemo(() => buildSpokenPhrase(letter, word), [letter, word])
 
   useEffect(() => {
     setPicked(null)
