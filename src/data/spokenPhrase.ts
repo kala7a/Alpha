@@ -10,7 +10,13 @@ import type { BgLetter } from './letters'
  * absorbs the clip instead of the real sound.
  */
 export function buildSpokenPhrase(letter: BgLetter): string {
-  const variants = [`Буквата ${letter.speechText}`, `${letter.word} започва с ${letter.speechText}`]
+  const variants = [`Буквата ${letter.speechText}`]
+  // Only add the "word starts with" variant when there's an actual word to
+  // reference — Ь's "word" field is just its own name again ("ер малък"),
+  // so this would otherwise say "ер малък започва с ер малък".
+  if (letter.word !== letter.speechText) {
+    variants.push(`${letter.word} започва с ${letter.speechText}`)
+  }
   return variants[Math.floor(Math.random() * variants.length)]
 }
 
