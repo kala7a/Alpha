@@ -1,6 +1,16 @@
 export interface WordOption {
   /** A simple, well-known word starting with the letter. */
   word: string
+  /**
+   * The same word with an explicit stress mark (combining U+0301 right
+   * after the stressed vowel) — used only for speech synthesis, never
+   * shown on screen. Bulgarian spelling doesn't mark stress, so browsers'
+   * Bulgarian voices often guess wrong for less common words (e.g. reading
+   * "жираф" as "ЖИраф" instead of "жирАф"); this is the standard way to
+   * hint the correct one. Omitted for single-syllable words, which have
+   * no ambiguity to begin with.
+   */
+  spoken?: string
   /** An emoji illustrating the word. */
   emoji: string
 }
@@ -24,24 +34,29 @@ export function pickWordOption(letter: BgLetter): WordOption {
   return letter.words[Math.floor(Math.random() * letter.words.length)]
 }
 
+/** The text to actually pass to speech synthesis for a word option. */
+export function spokenWord(word: WordOption): string {
+  return word.spoken ?? word.word
+}
+
 // The 30 letters of the Bulgarian Cyrillic alphabet, in order.
 export const ALPHABET: BgLetter[] = [
   {
     letter: 'А',
     speechText: 'а',
     words: [
-      { word: 'ананас', emoji: '🍍' },
-      { word: 'акула', emoji: '🦈' },
-      { word: 'автобус', emoji: '🚌' },
+      { word: 'ананас', spoken: 'анана́с', emoji: '🍍' },
+      { word: 'акула', spoken: 'аку́ла', emoji: '🦈' },
+      { word: 'автобус', spoken: 'авто́бус', emoji: '🚌' },
     ],
   },
   {
     letter: 'Б',
     speechText: 'бъ',
     words: [
-      { word: 'балон', emoji: '🎈' },
-      { word: 'банан', emoji: '🍌' },
-      { word: 'бухал', emoji: '🦉' },
+      { word: 'балон', spoken: 'бало́н', emoji: '🎈' },
+      { word: 'банан', spoken: 'бана́н', emoji: '🍌' },
+      { word: 'бухал', spoken: 'бу́хал', emoji: '🦉' },
     ],
   },
   {
@@ -49,66 +64,66 @@ export const ALPHABET: BgLetter[] = [
     speechText: 'въ',
     words: [
       { word: 'вълк', emoji: '🐺' },
-      { word: 'вагон', emoji: '🚃' },
+      { word: 'вагон', spoken: 'ваго́н', emoji: '🚃' },
     ],
   },
   {
     letter: 'Г',
     speechText: 'гъ',
     words: [
-      { word: 'гъба', emoji: '🍄' },
-      { word: 'грозде', emoji: '🍇' },
+      { word: 'гъба', spoken: 'гъ́ба', emoji: '🍄' },
+      { word: 'грозде', spoken: 'гро́зде', emoji: '🍇' },
     ],
   },
   {
     letter: 'Д',
     speechText: 'дъ',
     words: [
-      { word: 'домат', emoji: '🍅' },
-      { word: 'делфин', emoji: '🐬' },
-      { word: 'дърво', emoji: '🌳' },
+      { word: 'домат', spoken: 'дома́т', emoji: '🍅' },
+      { word: 'делфин', spoken: 'делфи́н', emoji: '🐬' },
+      { word: 'дърво', spoken: 'дърво́', emoji: '🌳' },
     ],
   },
   {
     letter: 'Е',
     speechText: 'е',
     words: [
-      { word: 'еднорог', emoji: '🦄' },
-      { word: 'елха', emoji: '🎄' },
+      { word: 'еднорог', spoken: 'еднoро́г', emoji: '🦄' },
+      { word: 'елха', spoken: 'елха́', emoji: '🎄' },
     ],
   },
   {
     letter: 'Ж',
     speechText: 'жъ',
     words: [
-      { word: 'жираф', emoji: '🦒' },
-      { word: 'жаба', emoji: '🐸' },
+      { word: 'жираф', spoken: 'жира́ф', emoji: '🦒' },
+      { word: 'жаба', spoken: 'жа́ба', emoji: '🐸' },
     ],
   },
   {
     letter: 'З',
     speechText: 'зъ',
     words: [
-      { word: 'заек', emoji: '🐇' },
-      { word: 'звезда', emoji: '⭐' },
-      { word: 'змия', emoji: '🐍' },
+      { word: 'заек', spoken: 'за́ек', emoji: '🐇' },
+      { word: 'звезда', spoken: 'звезда́', emoji: '⭐' },
+      { word: 'змия', spoken: 'змия́', emoji: '🐍' },
     ],
   },
   {
     letter: 'И',
     speechText: 'и',
-    words: [{ word: 'игра', emoji: '🎮' }],
+    words: [{ word: 'игра', spoken: 'игра́', emoji: '🎮' }],
   },
   {
     letter: 'Й',
     speechText: 'и кратко',
-    words: [{ word: 'йо-йо', emoji: '🪀' }],
+    words: [{ word: 'йо-йо', spoken: 'йо́-йо', emoji: '🪀' }],
   },
   {
     letter: 'К',
     speechText: 'къ',
     words: [
-      { word: 'котка', emoji: '🐱' },
+      { word: 'котка', spoken: 'ко́тка', emoji: '🐱' },
       { word: 'кон', emoji: '🐴' },
       { word: 'ключ', emoji: '🔑' },
     ],
@@ -118,17 +133,17 @@ export const ALPHABET: BgLetter[] = [
     speechText: 'лъ',
     words: [
       { word: 'лъв', emoji: '🦁' },
-      { word: 'лале', emoji: '🌷' },
-      { word: 'лодка', emoji: '⛵' },
+      { word: 'лале', spoken: 'лале́', emoji: '🌷' },
+      { word: 'лодка', spoken: 'ло́дка', emoji: '⛵' },
     ],
   },
   {
     letter: 'М',
     speechText: 'мъ',
     words: [
-      { word: 'маймуна', emoji: '🐒' },
-      { word: 'мишка', emoji: '🐭' },
-      { word: 'молив', emoji: '✏️' },
+      { word: 'маймуна', spoken: 'майму́на', emoji: '🐒' },
+      { word: 'мишка', spoken: 'ми́шка', emoji: '🐭' },
+      { word: 'молив', spoken: 'мо́лив', emoji: '✏️' },
     ],
   },
   {
@@ -136,33 +151,33 @@ export const ALPHABET: BgLetter[] = [
     speechText: 'нъ',
     words: [
       { word: 'нос', emoji: '👃' },
-      { word: 'носорог', emoji: '🦏' },
+      { word: 'носорог', spoken: 'носоро́г', emoji: '🦏' },
     ],
   },
   {
     letter: 'О',
     speechText: 'о',
     words: [
-      { word: 'октопод', emoji: '🐙' },
-      { word: 'очи', emoji: '👀' },
-      { word: 'огън', emoji: '🔥' },
+      { word: 'октопод', spoken: 'октопо́д', emoji: '🐙' },
+      { word: 'очи', spoken: 'очи́', emoji: '👀' },
+      { word: 'огън', spoken: 'о́гън', emoji: '🔥' },
     ],
   },
   {
     letter: 'П',
     speechText: 'пъ',
     words: [
-      { word: 'патица', emoji: '🦆' },
-      { word: 'панда', emoji: '🐼' },
-      { word: 'пеперуда', emoji: '🦋' },
+      { word: 'патица', spoken: 'па́тица', emoji: '🦆' },
+      { word: 'панда', spoken: 'па́нда', emoji: '🐼' },
+      { word: 'пеперуда', spoken: 'пеперу́да', emoji: '🦋' },
     ],
   },
   {
     letter: 'Р',
     speechText: 'ръ',
     words: [
-      { word: 'риба', emoji: '🐟' },
-      { word: 'ракета', emoji: '🚀' },
+      { word: 'риба', spoken: 'ри́ба', emoji: '🐟' },
+      { word: 'ракета', spoken: 'раке́та', emoji: '🚀' },
     ],
   },
   {
@@ -170,33 +185,33 @@ export const ALPHABET: BgLetter[] = [
     speechText: 'съ',
     words: [
       { word: 'слон', emoji: '🐘' },
-      { word: 'слънце', emoji: '☀️' },
-      { word: 'сърце', emoji: '❤️' },
+      { word: 'слънце', spoken: 'слъ́нце', emoji: '☀️' },
+      { word: 'сърце', spoken: 'сърце́', emoji: '❤️' },
     ],
   },
   {
     letter: 'Т',
     speechText: 'тъ',
     words: [
-      { word: 'тигър', emoji: '🐯' },
-      { word: 'торта', emoji: '🎂' },
-      { word: 'трактор', emoji: '🚜' },
+      { word: 'тигър', spoken: 'ти́гър', emoji: '🐯' },
+      { word: 'торта', spoken: 'то́рта', emoji: '🎂' },
+      { word: 'трактор', spoken: 'тра́ктор', emoji: '🚜' },
     ],
   },
   {
     letter: 'У',
     speechText: 'у',
     words: [
-      { word: 'ухо', emoji: '👂' },
-      { word: 'усмивка', emoji: '😊' },
+      { word: 'ухо', spoken: 'ухо́', emoji: '👂' },
+      { word: 'усмивка', spoken: 'усми́вка', emoji: '😊' },
     ],
   },
   {
     letter: 'Ф',
     speechText: 'фъ',
     words: [
-      { word: 'фламинго', emoji: '🦩' },
-      { word: 'футбол', emoji: '⚽' },
+      { word: 'фламинго', spoken: 'флами́нго', emoji: '🦩' },
+      { word: 'футбол', spoken: 'футбо́л', emoji: '⚽' },
     ],
   },
   {
@@ -204,14 +219,14 @@ export const ALPHABET: BgLetter[] = [
     speechText: 'хъ',
     words: [
       { word: 'хляб', emoji: '🍞' },
-      { word: 'хвърчило', emoji: '🪁' },
+      { word: 'хвърчило', spoken: 'хвърчи́ло', emoji: '🪁' },
     ],
   },
   {
     letter: 'Ц',
     speechText: 'цъ',
     words: [
-      { word: 'цвете', emoji: '🌸' },
+      { word: 'цвете', spoken: 'цве́те', emoji: '🌸' },
       { word: 'цирк', emoji: '🎪' },
     ],
   },
@@ -219,27 +234,27 @@ export const ALPHABET: BgLetter[] = [
     letter: 'Ч',
     speechText: 'чъ',
     words: [
-      { word: 'чадър', emoji: '☂️' },
-      { word: 'часовник', emoji: '⏰' },
+      { word: 'чадър', spoken: 'чадъ́р', emoji: '☂️' },
+      { word: 'часовник', spoken: 'часо́вник', emoji: '⏰' },
     ],
   },
   {
     letter: 'Ш',
     speechText: 'шъ',
     words: [
-      { word: 'шапка', emoji: '🎩' },
-      { word: 'шоколад', emoji: '🍫' },
+      { word: 'шапка', spoken: 'ша́пка', emoji: '🎩' },
+      { word: 'шоколад', spoken: 'шокола́д', emoji: '🍫' },
     ],
   },
   {
     letter: 'Щ',
     speechText: 'щъ',
-    words: [{ word: 'щастие', emoji: '😊' }],
+    words: [{ word: 'щастие', spoken: 'ща́стие', emoji: '😊' }],
   },
   {
     letter: 'Ъ',
     speechText: 'ъ',
-    words: [{ word: 'ъгъл', emoji: '📐' }],
+    words: [{ word: 'ъгъл', spoken: 'ъ́гъл', emoji: '📐' }],
   },
   {
     letter: 'Ь',
@@ -250,16 +265,16 @@ export const ALPHABET: BgLetter[] = [
     letter: 'Ю',
     speechText: 'ю',
     words: [
-      { word: 'юмрук', emoji: '👊' },
-      { word: 'юфка', emoji: '🍜' },
+      { word: 'юмрук', spoken: 'юмру́к', emoji: '👊' },
+      { word: 'юфка', spoken: 'ю́фка', emoji: '🍜' },
     ],
   },
   {
     letter: 'Я',
     speechText: 'я',
     words: [
-      { word: 'яйце', emoji: '🥚' },
-      { word: 'ябълка', emoji: '🍎' },
+      { word: 'яйце', spoken: 'яйце́', emoji: '🥚' },
+      { word: 'ябълка', spoken: 'я́бълка', emoji: '🍎' },
     ],
   },
 ]
