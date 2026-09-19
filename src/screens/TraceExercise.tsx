@@ -35,18 +35,20 @@ export default function TraceExercise({ letter, onComplete }: Props) {
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center gap-5 px-6 py-4">
-      <p className="text-center text-xl font-bold text-violet-800">Обиколи буквата с пръст ✍️</p>
+    <div className="flex min-h-full flex-1 flex-col items-center gap-2 px-6 py-2">
+      <p className="text-center text-lg font-bold text-violet-800">Обиколи буквата с пръст ✍️</p>
 
       <button
         onClick={() => speak(letter.speechText)}
         disabled={!supported}
-        className="flex items-center gap-2 rounded-full bg-white px-6 py-3 text-2xl font-extrabold text-violet-700 shadow-md active:scale-95 disabled:opacity-50"
+        className="flex items-center gap-2 rounded-full bg-white px-5 py-2 text-xl font-extrabold text-violet-700 shadow-md active:scale-95 disabled:opacity-50"
       >
         🔊 {letter.letter}
       </button>
 
-      <TraceCanvas letter={letter.letter} resetKey={0} onCoverageChange={setCoverage} />
+      <div className="flex w-full flex-1 items-center justify-center py-1">
+        <TraceCanvas letter={letter.letter} resetKey={0} onCoverageChange={setCoverage} />
+      </div>
 
       <div className="flex w-full max-w-xs items-center gap-2">
         <div className="h-4 flex-1 overflow-hidden rounded-full bg-white/50">
@@ -57,20 +59,20 @@ export default function TraceExercise({ letter, onComplete }: Props) {
         </div>
       </div>
 
-      <p className="flex items-center gap-2 text-lg font-semibold text-violet-900">
-        <span className="text-2xl">{letter.emoji}</span>
+      <p className="flex items-center gap-2 text-base font-semibold text-violet-900">
+        <span className="text-xl">{letter.emoji}</span>
         {letter.word}
       </p>
 
       {finished ? (
-        <p className="animate-pop text-3xl font-extrabold text-emerald-600">
+        <p className="animate-pop py-2 text-2xl font-extrabold text-emerald-600">
           {great ? 'Страхотно! 🎉' : 'Браво, опита се! 🙌'}
         </p>
       ) : (
         <button
           onClick={handleFinish}
           disabled={!canFinish}
-          className="w-full max-w-xs rounded-full bg-emerald-400 px-8 py-4 text-2xl font-extrabold text-emerald-900 shadow-[0_6px_0_0_rgba(6,95,70,0.4)] transition active:translate-y-1 active:shadow-[0_2px_0_0_rgba(6,95,70,0.4)] disabled:opacity-40 disabled:active:translate-y-0"
+          className="w-full max-w-xs shrink-0 rounded-full bg-emerald-400 px-8 py-3 text-xl font-extrabold text-emerald-900 shadow-[0_6px_0_0_rgba(6,95,70,0.4)] transition active:translate-y-1 active:shadow-[0_2px_0_0_rgba(6,95,70,0.4)] disabled:opacity-40 disabled:active:translate-y-0"
         >
           Готово ✓
         </button>

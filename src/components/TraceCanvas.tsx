@@ -152,7 +152,7 @@ export default function TraceCanvas({ letter, resetKey, onCoverageChange }: Prop
     <div className="flex flex-col items-center gap-3">
       <canvas
         ref={canvasRef}
-        className="aspect-square w-full max-w-xs touch-none rounded-3xl bg-white shadow-inner"
+        className="aspect-square w-full max-w-xs max-h-[36vh] touch-none rounded-3xl bg-white shadow-inner"
         style={{ touchAction: 'none' }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}

@@ -26,8 +26,8 @@ export default function GameSession({ roundCount, onFinish }: Props) {
   }
 
   return (
-    <div className="flex min-h-dvh flex-col bg-gradient-to-b from-sky-200 via-violet-100 to-pink-100">
-      <div className="flex items-center gap-3 px-6 pt-6">
+    <div className="flex h-dvh flex-col overflow-hidden bg-gradient-to-b from-sky-200 via-violet-100 to-pink-100">
+      <div className="flex shrink-0 items-center gap-3 px-6 pt-4">
         <div className="h-4 flex-1 overflow-hidden rounded-full bg-white/70">
           <div
             className="h-full rounded-full bg-violet-500 transition-all duration-500"
@@ -39,7 +39,7 @@ export default function GameSession({ roundCount, onFinish }: Props) {
         </span>
       </div>
 
-      <div key={index} className="flex flex-1 flex-col">
+      <div key={index} className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         {exercise.type === 'trace' ? (
           <TraceExercise letter={exercise.letter} onComplete={handleRoundComplete} />
         ) : (
