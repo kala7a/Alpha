@@ -92,21 +92,33 @@ export default function HomeScreen({ onStart, speechSupported, hasBulgarianVoice
 
         {(canInstall || (fsSupported && !isFullscreen)) && (
           <div className="flex w-full justify-center gap-2">
+            {/* Plain native buttons on purpose, not KidButton: both
+                requestFullscreen() and BeforeInstallPromptEvent.prompt()
+                are picky about the browser's user-activation state and can
+                silently no-op on a pointerdown-triggered press (observed:
+                install "worked from the second try" — the first tap's
+                activation wasn't fresh enough for the API, even though it
+                felt identical to the child-facing buttons). A real click
+                is the one gesture type every browser reliably honors for
+                these APIs, and these two are one-time setup actions a
+                parent taps deliberately, not something a distracted 5-year
+                -old mashes — KidButton's touch-responsiveness trade-off
+                isn't needed here, so the extra reliability wins outright. */}
             {canInstall && (
-              <KidButton
-                onPress={promptInstall}
+              <button
+                onClick={promptInstall}
                 className="flex-1 rounded-full bg-white/25 px-3 py-2 text-sm font-bold text-white active:scale-95"
               >
                 📲 Инсталирай
-              </KidButton>
+              </button>
             )}
             {fsSupported && !isFullscreen && (
-              <KidButton
-                onPress={handleFullscreen}
+              <button
+                onClick={handleFullscreen}
                 className="flex-1 rounded-full bg-white/25 px-3 py-2 text-sm font-bold text-white active:scale-95"
               >
                 ⛶ Цял екран
-              </KidButton>
+              </button>
             )}
           </div>
         )}

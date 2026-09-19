@@ -37,9 +37,15 @@ export function useInstallPrompt() {
 
   async function promptInstall() {
     if (!deferredPrompt) return
-    await deferredPrompt.prompt()
-    await deferredPrompt.userChoice
-    setDeferredPrompt(null)
+    try {
+      await deferredPrompt.prompt()
+      await deferredPrompt.userChoice
+      setDeferredPrompt(null)
+    } catch {
+      // Rejected — most likely the same gesture-freshness issue prompt()
+      // is picky about. Leave deferredPrompt as-is so a retry is possible
+      // instead of the button just vanishing after a failed first tap.
+    }
   }
 
   return { canInstall: deferredPrompt !== null && !installed, installed, promptInstall }
