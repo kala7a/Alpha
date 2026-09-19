@@ -33,14 +33,7 @@ export function useSpeech() {
       // synth) makes the clipped-onset bug below worse, not better.
       if (synth.speaking || synth.pending) synth.cancel()
 
-      // Chrome (and some other engines) reliably clip roughly the first
-      // 100-200ms of an utterance's audio. For long words that's barely
-      // noticeable, but Bulgarian letter names like "ръ"/"бъ"/"гъ" are two
-      // sounds total, so the clipped fraction is the entire leading
-      // consonant — it comes out sounding like just the trailing "ъ". A
-      // short throwaway lead-in word absorbs that clip instead of the
-      // real sound, without repeating the target sound itself.
-      const utterance = new SpeechSynthesisUtterance(`Чуй, ${text}`)
+      const utterance = new SpeechSynthesisUtterance(text)
       utterance.lang = 'bg-BG'
       utterance.rate = 0.8
       utterance.pitch = 1.1
