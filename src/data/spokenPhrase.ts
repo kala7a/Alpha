@@ -1,4 +1,4 @@
-import { spokenWord, type BgLetter, type WordOption } from './letters'
+import type { BgLetter, WordOption } from './letters'
 
 /**
  * Two natural ways to say a letter's sound out loud, picked at random per
@@ -13,12 +13,12 @@ export function buildSpokenPhrase(letter: BgLetter, word: WordOption): string {
   // reference — Ь's "word" is just its own name again ("ер малък"), so this
   // would otherwise say "Буквата ер малък, като ер малък".
   if (word.word !== letter.speechText) {
-    variants.push(`Буквата ${letter.speechText}, като ${spokenWord(word)}`)
+    variants.push(`Буквата ${letter.speechText}, като ${word.word}`)
   }
   return variants[Math.floor(Math.random() * variants.length)]
 }
 
 /** For the "which letter does this word start with?" exercise. */
 export function buildWordPhrase(word: WordOption): string {
-  return `Думата ${spokenWord(word)}`
+  return `Думата ${word.word}`
 }
