@@ -153,10 +153,12 @@ export default function TraceCanvas({ letter, resetKey, onCoverageChange }: Prop
       <canvas
         ref={canvasRef}
         className="aspect-square w-full max-w-xs touch-none rounded-3xl bg-white shadow-inner"
+        style={{ touchAction: 'none' }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerUp}
+        onPointerCancel={handlePointerUp}
       />
       {hasInk && (
         <button
