@@ -152,7 +152,7 @@ export const ALPHABET: BgLetter[] = [
     letter: 'П',
     speechText: 'пъ',
     words: [
-      { word: 'патка', emoji: '🦆' },
+      { word: 'патица', emoji: '🦆' },
       { word: 'панда', emoji: '🐼' },
       { word: 'пеперуда', emoji: '🦋' },
     ],
