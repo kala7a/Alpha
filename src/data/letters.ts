@@ -38,7 +38,7 @@ export const ALPHABET: BgLetter[] = [
   { letter: 'Ш', speechText: 'шъ', word: 'шапка', emoji: '🎩' },
   { letter: 'Щ', speechText: 'щъ', word: 'щастие', emoji: '😊' },
   { letter: 'Ъ', speechText: 'ъ', word: 'ъгъл', emoji: '📐' },
-  { letter: 'Ь', speechText: 'мек знак', word: 'мек знак', emoji: '🤏' },
+  { letter: 'Ь', speechText: 'ер малък', word: 'ер малък', emoji: '🤏' },
   { letter: 'Ю', speechText: 'ю', word: 'юмрук', emoji: '👊' },
   { letter: 'Я', speechText: 'я', word: 'яйце', emoji: '🥚' },
 ]

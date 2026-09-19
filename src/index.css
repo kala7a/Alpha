@@ -18,7 +18,14 @@ body {
   overscroll-behavior: none;
 }
 
-* {
+/*
+ * Tailwind v4 puts its utility classes inside a CSS cascade layer, and
+ * un-layered rules always win over layered ones regardless of specificity.
+ * So this has to explicitly exclude canvas, or it silently beats the
+ * `touch-none` utility on the tracing canvas and breaks continuous drawing
+ * on touch devices (the browser treats the drag as a page-scroll gesture).
+ */
+*:not(canvas) {
   touch-action: manipulation;
 }
 
