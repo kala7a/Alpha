@@ -1,0 +1,15 @@
+{
+  "name": "Букви и Звуци",
+  "short_name": "Букви",
+  "description": "Учим българската азбука, играейки!",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#7c3aed",
+  "theme_color": "#7c3aed",
+  "lang": "bg",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

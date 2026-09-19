@@ -13,8 +13,13 @@ export default function App() {
 
   function startSession(rounds: number) {
     // Fired on the same tap that starts the session — the user gesture
-    // this needs, and enough head start before the first letter sound is
-    // due a few hundred ms later once the round screen has mounted.
+    // both of these need, and enough head start before the first letter
+    // sound is due a few hundred ms later once the round screen has
+    // mounted. Fullscreen hides the browser's own toolbar (including its
+    // back button) for the rest of the session; best-effort since some
+    // browsers restrict or simply don't support it — a young child mashing
+    // buttons shouldn't be able to exit the game by accident.
+    document.documentElement.requestFullscreen?.().catch(() => {})
     warmUp()
     setScreen({ name: 'session', rounds })
   }
