@@ -148,13 +148,14 @@ export const LETTER_STROKES: Record<string, Stroke[]> = {
     [{ x: 86, y: 85 }, { x: 86, y: 95 }],
   ],
   Ъ: [
-    [{ x: 22, y: 12 }, { x: 22, y: 88 }],
-    [{ x: 22, y: 12 }, { x: 42, y: 12 }],
-    // Loop deliberately smaller and lower than Ь's — at the guide's thick
-    // stroke width, a loop sized/placed like Б's or Ь's made Ъ render as a
-    // near-duplicate of Б instead of a recognizably different hard-sign
-    // shape.
-    arc(22, 76, 16, 13, -80, 90, 7),
+    [{ x: 38, y: 12 }, { x: 38, y: 88 }],
+    // Flag points LEFT off the stem, opposite of Б's rightward flag — in
+    // the real letterform the top serif and the loop open away from each
+    // other, not the same direction. (Checked against DejaVu Sans's actual
+    // Ъ glyph pixel-by-pixel: the stem carrying the loop sits well right
+    // of the flag's left tip, unlike Б where flag and stem share an edge.)
+    [{ x: 38, y: 12 }, { x: 14, y: 12 }],
+    arc(38, 68, 22, 18, -80, 90, 7),
   ],
   Ь: [
     [{ x: 25, y: 12 }, { x: 25, y: 88 }],
