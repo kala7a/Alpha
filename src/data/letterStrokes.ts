@@ -35,8 +35,8 @@ export const LETTER_STROKES: Record<string, Stroke[]> = {
   ],
   В: [
     [{ x: 28, y: 12 }, { x: 28, y: 88 }],
-    arc(28, 31, 24, 19, -90, 90, 6),
-    arc(28, 69, 27, 21, -90, 90, 6),
+    arc(28, 25, 32, 22, -90, 90, 6),
+    arc(28, 72, 34, 25, -90, 90, 6),
   ],
   Г: [
     [{ x: 25, y: 12 }, { x: 25, y: 88 }],
@@ -47,6 +47,9 @@ export const LETTER_STROKES: Record<string, Stroke[]> = {
     [{ x: 25, y: 12 }, { x: 20, y: 84 }],
     [{ x: 75, y: 12 }, { x: 80, y: 84 }],
     [{ x: 14, y: 84 }, { x: 86, y: 84 }],
+    // Small feet sticking down past the bottom bar, like real Д.
+    [{ x: 14, y: 84 }, { x: 14, y: 96 }],
+    [{ x: 86, y: 84 }, { x: 86, y: 96 }],
   ],
   Е: [
     [{ x: 25, y: 12 }, { x: 25, y: 88 }],
@@ -56,17 +59,13 @@ export const LETTER_STROKES: Record<string, Stroke[]> = {
   ],
   Ж: [
     [{ x: 50, y: 12 }, { x: 50, y: 88 }],
-    // Four short diagonals attaching to the spine at two different
-    // heights, not one shared center point — otherwise each pair of
-    // opposite arms is collinear (same slope through the same vertex)
-    // and the whole thing visually collapses into a plain X. The two
-    // heights also need to be well apart (25/75, not just off-center) —
-    // at the guide's thick stroke width anything closer still blurs into
-    // one crossing blob and reads as a plain X with a line through it.
-    [{ x: 15, y: 15 }, { x: 50, y: 25 }],
-    [{ x: 50, y: 75 }, { x: 15, y: 85 }],
-    [{ x: 85, y: 15 }, { x: 50, y: 25 }],
-    [{ x: 50, y: 75 }, { x: 85, y: 85 }],
+    // Spine plus two full corner-to-corner diagonals (same construction
+    // as Х) — the real glyph's diagonals actually cross and overlap each
+    // other through the middle, not just touch the spine at separate
+    // points. It's the added spine, not gapped-apart arms, that tells it
+    // apart from a plain Х.
+    [{ x: 20, y: 12 }, { x: 80, y: 88 }],
+    [{ x: 80, y: 12 }, { x: 20, y: 88 }],
   ],
   З: [arc(40, 32, 20, 18, -100, 100, 7), arc(40, 68, 20, 18, -100, 100, 7)],
   И: [
@@ -108,7 +107,7 @@ export const LETTER_STROKES: Record<string, Stroke[]> = {
   ],
   Р: [
     [{ x: 28, y: 12 }, { x: 28, y: 88 }],
-    arc(28, 30, 26, 18, -90, 90, 6),
+    arc(28, 37, 34, 25, -90, 90, 6),
   ],
   С: [arc(50, 50, 32, 38, 35, 325, 10)],
   Т: [
@@ -158,11 +157,11 @@ export const LETTER_STROKES: Record<string, Stroke[]> = {
     // Ъ glyph pixel-by-pixel: the stem carrying the loop sits well right
     // of the flag's left tip, unlike Б where flag and stem share an edge.)
     [{ x: 38, y: 12 }, { x: 14, y: 12 }],
-    arc(38, 68, 22, 18, -80, 90, 7),
+    arc(38, 68, 34, 22, -80, 90, 7),
   ],
   Ь: [
     [{ x: 25, y: 12 }, { x: 25, y: 88 }],
-    arc(25, 68, 22, 18, -80, 90, 7),
+    arc(25, 68, 34, 22, -80, 90, 7),
   ],
   Ю: [
     [{ x: 20, y: 12 }, { x: 20, y: 88 }],
@@ -171,7 +170,7 @@ export const LETTER_STROKES: Record<string, Stroke[]> = {
   ],
   Я: [
     [{ x: 60, y: 12 }, { x: 60, y: 88 }],
-    arc(60, 30, 22, 18, 90, 270, 6),
-    [{ x: 38, y: 45 }, { x: 20, y: 88 }],
+    arc(60, 34, 38, 22, 90, 270, 6),
+    [{ x: 30, y: 50 }, { x: 20, y: 88 }],
   ],
 }
