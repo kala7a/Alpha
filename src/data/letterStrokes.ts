@@ -1,3 +1,5 @@
+import { CURSIVE_STROKES } from './cursiveStrokes'
+
 export interface Point {
   x: number
   y: number
@@ -52,7 +54,7 @@ function bowlLeft(stemX: number, top: number, bottom: number, left: number): Str
   return [{ x: stemX, y: top }, ...arc(cx, cy, rx, ry, 270, 90, 8), { x: stemX, y: bottom }]
 }
 
-export const LETTER_STROKES: Record<string, Stroke[]> = {
+const CAPITALS: Record<string, Stroke[]> = {
   А: [
     [{ x: 50, y: 12 }, { x: 14, y: 88 }],
     [{ x: 50, y: 12 }, { x: 86, y: 88 }],
@@ -219,3 +221,5 @@ export const LETTER_STROKES: Record<string, Stroke[]> = {
     [{ x: 40, y: 56 }, { x: 18, y: 88 }],
   ],
 }
+/** Keyed by the glyph itself, so print capitals and cursive both look up directly. */
+export const LETTER_STROKES: Record<string, Stroke[]> = { ...CAPITALS, ...CURSIVE_STROKES }

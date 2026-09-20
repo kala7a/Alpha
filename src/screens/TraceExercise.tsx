@@ -1,17 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
 import TraceCanvas, { DONE_THRESHOLD, MIN_TO_FINISH } from '../components/TraceCanvas'
 import KidButton from '../components/KidButton'
-import { pickWordOption, type BgLetter } from '../data/letters'
+import { glyphFor, pickWordOption, type BgLetter } from '../data/letters'
 import { buildSpokenPhrase } from '../data/spokenPhrase'
 import { useSpeech } from '../hooks/useSpeech'
 import { useSoundEffects } from '../hooks/useSoundEffects'
 
 interface Props {
   letter: BgLetter
+  cursive: boolean
   onComplete: (correct: boolean) => void
 }
 
-export default function TraceExercise({ letter, onComplete }: Props) {
+export default function TraceExercise({ letter, cursive, onComplete }: Props) {
+  const glyph = glyphFor(letter, cursive)
   const { speak, supported } = useSpeech()
   const { playCorrect } = useSoundEffects()
   const [coverage, setCoverage] = useState(0)
@@ -49,11 +51,11 @@ export default function TraceExercise({ letter, onComplete }: Props) {
         disabled={!supported}
         className="flex items-center gap-2 rounded-full bg-white px-5 py-2 text-xl font-extrabold text-violet-700 shadow-md active:scale-95 disabled:opacity-50"
       >
-        🔊 {letter.letter}
+        🔊 <span className={cursive ? 'font-hand' : ''}>{glyph}</span>
       </KidButton>
 
       <div className="flex w-full flex-1 items-center justify-center py-1">
-        <TraceCanvas letter={letter.letter} resetKey={0} onCoverageChange={setCoverage} />
+        <TraceCanvas letter={glyph} resetKey={0} onCoverageChange={setCoverage} />
       </div>
 
       <div className="flex w-full max-w-xs items-center gap-2">
