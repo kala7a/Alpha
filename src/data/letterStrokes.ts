@@ -57,13 +57,16 @@ export const LETTER_STROKES: Record<string, Stroke[]> = {
   Ж: [
     [{ x: 50, y: 12 }, { x: 50, y: 88 }],
     // Four short diagonals attaching to the spine at two different
-    // heights (42 and 58), not one shared center point — otherwise each
-    // pair of opposite arms is collinear (same slope through the same
-    // vertex) and the whole thing visually collapses into a plain X.
-    [{ x: 15, y: 15 }, { x: 50, y: 42 }],
-    [{ x: 50, y: 58 }, { x: 15, y: 85 }],
-    [{ x: 85, y: 15 }, { x: 50, y: 42 }],
-    [{ x: 50, y: 58 }, { x: 85, y: 85 }],
+    // heights, not one shared center point — otherwise each pair of
+    // opposite arms is collinear (same slope through the same vertex)
+    // and the whole thing visually collapses into a plain X. The two
+    // heights also need to be well apart (25/75, not just off-center) —
+    // at the guide's thick stroke width anything closer still blurs into
+    // one crossing blob and reads as a plain X with a line through it.
+    [{ x: 15, y: 15 }, { x: 50, y: 25 }],
+    [{ x: 50, y: 75 }, { x: 15, y: 85 }],
+    [{ x: 85, y: 15 }, { x: 50, y: 25 }],
+    [{ x: 50, y: 75 }, { x: 85, y: 85 }],
   ],
   З: [arc(40, 32, 20, 18, -100, 100, 7), arc(40, 68, 20, 18, -100, 100, 7)],
   И: [
