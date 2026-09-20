@@ -90,8 +90,10 @@ export const LETTER_STROKES: Record<string, Stroke[]> = {
   ],
   М: [
     [{ x: 18, y: 88 }, { x: 18, y: 12 }],
-    [{ x: 18, y: 12 }, { x: 50, y: 58 }],
-    [{ x: 50, y: 58 }, { x: 82, y: 12 }],
+    // Zigzag dips to y:72, not just past the midpoint — in the real glyph
+    // the V reaches down near the baseline, not halfway down the stems.
+    [{ x: 18, y: 12 }, { x: 50, y: 72 }],
+    [{ x: 50, y: 72 }, { x: 82, y: 12 }],
     [{ x: 82, y: 12 }, { x: 82, y: 88 }],
   ],
   Н: [
