@@ -12,8 +12,8 @@ import type { Stroke } from './letterStrokes'
  *
  * Stroke order is left to right, with any mark above the x-height (й) last.
  * That is a reasonable default, not the taught stroke order for every
- * letter — letters whose strokes cross (ж у т ю) still come out in more
- * pieces than a pen would use.
+ * letter — letters whose strokes cross (у т ю) still come out in more
+ * pieces than a pen would use. ж is drawn by hand; see the note on it.
  *
  * Cursive's ascenders and descenders are very long next to its small
  * x-height. Mapped faithfully the body would land at about a quarter of the
@@ -44,13 +44,18 @@ export const CURSIVE_STROKES: Record<string, Stroke[]> = {
     [{ x: 36.5, y: 56.1 }, { x: 37.6, y: 60.4 }, { x: 41.9, y: 63.7 }, { x: 50, y: 63.1 }, { x: 59.2, y: 58.3 }, { x: 58.1, y: 58.8 }],
     [{ x: 36.5, y: 56.1 }, { x: 38.1, y: 46.9 }, { x: 47.8, y: 35.6 }, { x: 56.5, y: 31.8 }, { x: 62.4, y: 31.8 }, { x: 63.5, y: 32.9 }, { x: 62.4, y: 41 }, { x: 57.6, y: 45.8 }, { x: 44.1, y: 52.9 }, { x: 37, y: 53.9 }],
   ],
+  // The one letter drawn by hand rather than traced, and the only one where
+  // the source face disagrees with the school chart. The chart writes ж as a
+  // central stroke with two rounded wings bowing outward from it — the same
+  // shape as its capital. The face draws a straight-armed asterisk instead,
+  // slanted, so it is not symmetric to begin with, and thinning then broke
+  // the crossing into six fragments that read as a lopsided blob. Since
+  // symmetry is ж's whole character, it is drawn here to match the chart:
+  // one wing, the spine, then the mirrored wing, left to right as written.
   ж: [
-    [{ x: 30, y: 61.5 }, { x: 27.8, y: 63.7 }, { x: 40.3, y: 50.7 }, { x: 50, y: 44.2 }, { x: 50.5, y: 30.2 }],
-    [{ x: 41.9, y: 49.6 }, { x: 31.1, y: 60.4 }, { x: 40.3, y: 50.7 }],
-    [{ x: 34.9, y: 32.3 }, { x: 47.8, y: 45.3 }, { x: 45.1, y: 48 }],
-    [{ x: 45.7, y: 68 }, { x: 44.1, y: 68.8 }, { x: 47.3, y: 64.8 }, { x: 50, y: 50.7 }, { x: 49.5, y: 44.2 }],
-    [{ x: 50, y: 42.1 }, { x: 56.5, y: 40.4 }, { x: 68.9, y: 32.3 }, { x: 72.2, y: 32.9 }],
-    [{ x: 50, y: 50.2 }, { x: 54.9, y: 51.8 }, { x: 71.1, y: 64.8 }, { x: 70, y: 64.2 }],
+    [{ x: 25, y: 29 }, { x: 28, y: 38 }, { x: 38, y: 45 }, { x: 49, y: 48 }, { x: 38, y: 51 }, { x: 28, y: 58 }, { x: 25, y: 67 }],
+    [{ x: 50, y: 27 }, { x: 50, y: 69 }],
+    [{ x: 75, y: 29 }, { x: 72, y: 38 }, { x: 62, y: 45 }, { x: 51, y: 48 }, { x: 62, y: 51 }, { x: 72, y: 58 }, { x: 75, y: 67 }],
   ],
   з: [
     [{ x: 35.1, y: 63.7 }, { x: 39.5, y: 65.3 }, { x: 49.2, y: 64.8 }, { x: 57.8, y: 58.8 }, { x: 58.9, y: 52.9 }, { x: 53.5, y: 45.8 }, { x: 56.2, y: 42.6 }, { x: 63.2, y: 39.4 }, { x: 64.9, y: 31.8 }, { x: 63.2, y: 29.6 }, { x: 57.8, y: 29.1 }, { x: 51.4, y: 30.7 }, { x: 44.3, y: 35.6 }, { x: 45.9, y: 34.5 }],

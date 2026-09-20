@@ -294,14 +294,19 @@ export default function TraceCanvas({ letter, resetKey, onCoverageChange }: Prop
         />
         <canvas ref={demoCanvasRef} className="pointer-events-none absolute inset-0 h-full w-full rounded-3xl" />
       </div>
-      {hasInk && (
-        <KidButton
-          onPress={handleClear}
-          className="rounded-full bg-white/70 px-5 py-2 text-sm font-bold text-violet-700 shadow active:scale-95"
-        >
-          ↺ Изчисти
-        </KidButton>
-      )}
+      {/* Always laid out, only hidden — appearing on first touch used to grow
+          this column and shift the vertically-centred canvas up by ~24px, out
+          from under the finger mid-stroke, then back down again on clear. */}
+      <KidButton
+        onPress={handleClear}
+        disabled={!hasInk}
+        aria-hidden={!hasInk}
+        className={`rounded-full bg-white/70 px-5 py-2 text-sm font-bold text-violet-700 shadow active:scale-95 ${
+          hasInk ? '' : 'invisible'
+        }`}
+      >
+        ↺ Изчисти
+      </KidButton>
     </div>
   )
 }
