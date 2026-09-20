@@ -2,30 +2,30 @@ import type { BgLetter } from './data/letters'
 
 export type ExerciseType = 'trace' | 'choice' | 'word'
 
-/** Easy is capitals only; hard mixes in the small letters too. */
+/** Easy is printed capitals; hard is the handwritten (ръкописни) forms. */
 export type Difficulty = 'easy' | 'hard'
 
 /**
- * Whether this round shows its letter as a small one. Every option in a round
- * shares it, so "which letter is this?" never comes down to telling а from А.
+ * Whether this round shows its letter handwritten rather than printed. Every
+ * option in a round shares it, so a round is never a mix of the two scripts.
  */
-interface RoundCase {
-  lowercase: boolean
+interface RoundScript {
+  cursive: boolean
 }
 
-export interface TraceExercise extends RoundCase {
+export interface TraceExercise extends RoundScript {
   type: 'trace'
   letter: BgLetter
 }
 
-export interface ChoiceExercise extends RoundCase {
+export interface ChoiceExercise extends RoundScript {
   type: 'choice'
   letter: BgLetter
   options: BgLetter[]
 }
 
 /** Say a word aloud ("слон"), child picks which of 2 letters it starts with. */
-export interface WordExercise extends RoundCase {
+export interface WordExercise extends RoundScript {
   type: 'word'
   letter: BgLetter
   options: BgLetter[]

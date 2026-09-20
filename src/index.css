@@ -1,6 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap');
 @import 'tailwindcss';
 
+/* Bundled rather than fetched: the handwritten rounds are unreadable without
+   it, and it's the same face the cursive stroke paths were traced from, so
+   the letter a child picks matches the one they trace. */
+@font-face {
+  font-family: 'Marck Script';
+  src: url('./assets/MarckScript.ttf') format('truetype');
+  font-display: swap;
+}
+
+/* Handwritten (ръкописни) letters shown as text, in the choice rounds. */
+.font-hand {
+  font-family: 'Marck Script', cursive;
+}
+
 :root {
   color-scheme: light;
 }

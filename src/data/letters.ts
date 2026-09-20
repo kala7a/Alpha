@@ -24,9 +24,12 @@ export function pickWordOption(letter: BgLetter): WordOption {
   return letter.words[Math.floor(Math.random() * letter.words.length)]
 }
 
-/** The glyph to show for a letter in a round — capital, or its small form. */
-export function glyphFor(letter: BgLetter, lowercase: boolean): string {
-  return lowercase ? letter.letter.toLowerCase() : letter.letter
+/**
+ * The glyph to show for a letter in a round. Handwritten rounds use the small
+ * letter, which is the key the cursive stroke paths are stored under.
+ */
+export function glyphFor(letter: BgLetter, cursive: boolean): string {
+  return cursive ? letter.letter.toLowerCase() : letter.letter
 }
 
 // The 30 letters of the Bulgarian Cyrillic alphabet, in order.

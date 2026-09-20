@@ -36,16 +36,14 @@ export function buildSession(difficulty: Difficulty): Exercise[] {
     // word-first-letter rounds all show up across a session.
     const roll = Math.random()
     const type = roll < 1 / 3 ? 'trace' : roll < 2 / 3 ? 'choice' : 'word'
-    // Hard mixes both cases round by round rather than switching to small
-    // letters wholesale, so capitals stay in practice alongside them.
-    const lowercase = difficulty === 'hard' && Math.random() < 0.5
+    const cursive = difficulty === 'hard'
 
     if (type === 'choice') {
       const exercise: ChoiceExercise = {
         type: 'choice',
         letter,
         options: pickOptions(letter, choicePool, 4),
-        lowercase,
+        cursive,
       }
       return exercise
     }
@@ -54,11 +52,11 @@ export function buildSession(difficulty: Difficulty): Exercise[] {
         type: 'word',
         letter,
         options: pickOptions(letter, wordPool, 2),
-        lowercase,
+        cursive,
       }
       return exercise
     }
-    const exercise: TraceExercise = { type: 'trace', letter, lowercase }
+    const exercise: TraceExercise = { type: 'trace', letter, cursive }
     return exercise
   })
 }

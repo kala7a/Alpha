@@ -8,11 +8,11 @@ import KidButton from '../components/KidButton'
 interface Props {
   letter: BgLetter
   options: BgLetter[]
-  lowercase: boolean
+  cursive: boolean
   onComplete: (correctFirstTry: boolean) => void
 }
 
-export default function WordExercise({ letter, options, lowercase, onComplete }: Props) {
+export default function WordExercise({ letter, options, cursive, onComplete }: Props) {
   const { speak, supported } = useSpeech()
   const { playCorrect, playWrong } = useSoundEffects()
   const [picked, setPicked] = useState<string | null>(null)
@@ -67,6 +67,8 @@ export default function WordExercise({ letter, options, lowercase, onComplete }:
               onPress={() => handlePick(opt)}
               disabled={picked !== null || isWrong}
               className={`aspect-square rounded-3xl text-6xl font-extrabold shadow-md transition active:scale-95 ${
+                cursive ? 'font-hand' : ''
+              } ${
                 isPicked
                   ? 'animate-pop bg-emerald-400 text-emerald-900'
                   : isWrong
@@ -74,7 +76,7 @@ export default function WordExercise({ letter, options, lowercase, onComplete }:
                     : 'bg-white text-violet-700 hover:bg-violet-50'
               } ${shakeKey === opt.letter ? 'animate-shake' : ''}`}
             >
-              {glyphFor(opt, lowercase)}
+              {glyphFor(opt, cursive)}
             </KidButton>
           )
         })}
@@ -82,7 +84,7 @@ export default function WordExercise({ letter, options, lowercase, onComplete }:
 
       {picked && (
         <p className="animate-pop text-2xl font-extrabold text-emerald-600">
-          {word.word} започва с {glyphFor(letter, lowercase)}! 🎉
+          {word.word} започва с {glyphFor(letter, cursive)}! 🎉
         </p>
       )}
     </div>

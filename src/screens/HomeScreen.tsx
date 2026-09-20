@@ -5,8 +5,8 @@ import { useInstallPrompt } from '../hooks/useInstallPrompt'
 import type { Difficulty } from '../types'
 
 const DIFFICULTY_OPTIONS: { value: Difficulty; label: string; hint: string }[] = [
-  { value: 'easy', label: 'Лесно', hint: 'само главни' },
-  { value: 'hard', label: 'Трудно', hint: 'главни и малки' },
+  { value: 'easy', label: 'Лесно', hint: 'печатни букви' },
+  { value: 'hard', label: 'Трудно', hint: 'ръкописни букви' },
 ]
 
 const FLOATING_LETTERS = ['А', 'б', 'В', 'ю', 'Я', 'ж']
