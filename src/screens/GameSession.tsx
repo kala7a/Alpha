@@ -3,14 +3,15 @@ import { buildSession } from '../data/session'
 import TraceExercise from './TraceExercise'
 import ChoiceExercise from './ChoiceExercise'
 import WordExercise from './WordExercise'
+import type { Difficulty } from '../types'
 
 interface Props {
-  roundCount: number
+  difficulty: Difficulty
   onFinish: (correct: number, total: number) => void
 }
 
-export default function GameSession({ roundCount, onFinish }: Props) {
-  const exercises = useMemo(() => buildSession(roundCount), [roundCount])
+export default function GameSession({ difficulty, onFinish }: Props) {
+  const exercises = useMemo(() => buildSession(difficulty), [difficulty])
   const [index, setIndex] = useState(0)
   const [correctCount, setCorrectCount] = useState(0)
 
@@ -41,12 +42,24 @@ export default function GameSession({ roundCount, onFinish }: Props) {
       </div>
 
       <div key={index} className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-        {exercise.type === 'trace' && <TraceExercise letter={exercise.letter} onComplete={handleRoundComplete} />}
+        {exercise.type === 'trace' && (
+          <TraceExercise letter={exercise.letter} lowercase={exercise.lowercase} onComplete={handleRoundComplete} />
+        )}
         {exercise.type === 'choice' && (
-          <ChoiceExercise letter={exercise.letter} options={exercise.options} onComplete={handleRoundComplete} />
+          <ChoiceExercise
+            letter={exercise.letter}
+            options={exercise.options}
+            lowercase={exercise.lowercase}
+            onComplete={handleRoundComplete}
+          />
         )}
         {exercise.type === 'word' && (
-          <WordExercise letter={exercise.letter} options={exercise.options} onComplete={handleRoundComplete} />
+          <WordExercise
+            letter={exercise.letter}
+            options={exercise.options}
+            lowercase={exercise.lowercase}
+            onComplete={handleRoundComplete}
+          />
         )}
       </div>
     </div>

@@ -1,5 +1,8 @@
 import { ALPHABET, type BgLetter } from './letters'
-import type { ChoiceExercise, Exercise, TraceExercise, WordExercise } from '../types'
+import type { ChoiceExercise, Difficulty, Exercise, TraceExercise, WordExercise } from '../types'
+
+/** Rounds per game. Fixed now that the home screen picks difficulty, not length. */
+export const ROUND_COUNT = 10
 
 // Letters kept out of the "listen and choose" pool: their names are too similar
 // to neighbors for a 5-year-old to reliably tell apart by ear alone.
@@ -23,8 +26,8 @@ function pickOptions(correct: BgLetter, pool: BgLetter[], count: number): BgLett
   return shuffle([correct, ...distractors])
 }
 
-export function buildSession(roundCount: number): Exercise[] {
-  const letters = shuffle(ALPHABET).slice(0, roundCount)
+export function buildSession(difficulty: Difficulty): Exercise[] {
+  const letters = shuffle(ALPHABET).slice(0, ROUND_COUNT)
   const choicePool = ALPHABET.filter((l) => !CHOICE_EXCLUDED.has(l.letter))
   const wordPool = ALPHABET.filter((l) => !WORD_EXCLUDED.has(l.letter))
 
@@ -33,12 +36,16 @@ export function buildSession(roundCount: number): Exercise[] {
     // word-first-letter rounds all show up across a session.
     const roll = Math.random()
     const type = roll < 1 / 3 ? 'trace' : roll < 2 / 3 ? 'choice' : 'word'
+    // Hard mixes both cases round by round rather than switching to small
+    // letters wholesale, so capitals stay in practice alongside them.
+    const lowercase = difficulty === 'hard' && Math.random() < 0.5
 
     if (type === 'choice') {
       const exercise: ChoiceExercise = {
         type: 'choice',
         letter,
         options: pickOptions(letter, choicePool, 4),
+        lowercase,
       }
       return exercise
     }
@@ -47,10 +54,11 @@ export function buildSession(roundCount: number): Exercise[] {
         type: 'word',
         letter,
         options: pickOptions(letter, wordPool, 2),
+        lowercase,
       }
       return exercise
     }
-    const exercise: TraceExercise = { type: 'trace', letter }
+    const exercise: TraceExercise = { type: 'trace', letter, lowercase }
     return exercise
   })
 }

@@ -2,23 +2,23 @@ import { useState } from 'react'
 import KidButton from '../components/KidButton'
 import { useFullscreen } from '../hooks/useFullscreen'
 import { useInstallPrompt } from '../hooks/useInstallPrompt'
+import type { Difficulty } from '../types'
 
-const LENGTH_OPTIONS = [
-  { rounds: 6, label: 'Кратка' },
-  { rounds: 10, label: 'Средна' },
-  { rounds: 16, label: 'Дълга' },
+const DIFFICULTY_OPTIONS: { value: Difficulty; label: string; hint: string }[] = [
+  { value: 'easy', label: 'Лесно', hint: 'само главни' },
+  { value: 'hard', label: 'Трудно', hint: 'главни и малки' },
 ]
 
-const FLOATING_LETTERS = ['А', 'Б', 'В', 'Ю', 'Я', 'Ж']
+const FLOATING_LETTERS = ['А', 'б', 'В', 'ю', 'Я', 'ж']
 
 interface Props {
-  onStart: (rounds: number) => void
+  onStart: (difficulty: Difficulty) => void
   speechSupported: boolean
   hasBulgarianVoice: boolean
 }
 
 export default function HomeScreen({ onStart, speechSupported, hasBulgarianVoice }: Props) {
-  const [rounds, setRounds] = useState(10)
+  const [difficulty, setDifficulty] = useState<Difficulty>('easy')
   const { supported: fsSupported, isFullscreen, enter: enterFullscreen } = useFullscreen()
   const { canInstall, promptInstall } = useInstallPrompt()
   const [fsMessage, setFsMessage] = useState<string | null>(null)
@@ -67,24 +67,24 @@ export default function HomeScreen({ onStart, speechSupported, hasBulgarianVoice
         )}
 
         <div className="flex w-full justify-center gap-3">
-          {LENGTH_OPTIONS.map((opt) => (
+          {DIFFICULTY_OPTIONS.map((opt) => (
             <KidButton
-              key={opt.rounds}
-              onPress={() => setRounds(opt.rounds)}
+              key={opt.value}
+              onPress={() => setDifficulty(opt.value)}
               className={`flex-1 rounded-2xl px-3 py-3 text-lg font-bold shadow-md transition active:scale-95 ${
-                rounds === opt.rounds
+                difficulty === opt.value
                   ? 'bg-white text-violet-600 ring-4 ring-white/60'
                   : 'bg-white/30 text-white hover:bg-white/40'
               }`}
             >
               {opt.label}
-              <div className="text-sm font-medium opacity-80">{opt.rounds} букви</div>
+              <div className="text-sm font-medium opacity-80">{opt.hint}</div>
             </KidButton>
           ))}
         </div>
 
         <KidButton
-          onPress={() => onStart(rounds)}
+          onPress={() => onStart(difficulty)}
           className="w-full rounded-full bg-yellow-300 px-10 py-5 text-3xl font-extrabold text-violet-700 shadow-[0_8px_0_0_rgba(180,120,0,0.5)] transition active:translate-y-1 active:shadow-[0_3px_0_0_rgba(180,120,0,0.5)]"
         >
           ▶ ИГРАЙ

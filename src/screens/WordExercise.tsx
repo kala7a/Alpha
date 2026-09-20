@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { pickWordOption, type BgLetter } from '../data/letters'
+import { glyphFor, pickWordOption, type BgLetter } from '../data/letters'
 import { buildWordPhrase } from '../data/spokenPhrase'
 import { useSpeech } from '../hooks/useSpeech'
 import { useSoundEffects } from '../hooks/useSoundEffects'
@@ -8,10 +8,11 @@ import KidButton from '../components/KidButton'
 interface Props {
   letter: BgLetter
   options: BgLetter[]
+  lowercase: boolean
   onComplete: (correctFirstTry: boolean) => void
 }
 
-export default function WordExercise({ letter, options, onComplete }: Props) {
+export default function WordExercise({ letter, options, lowercase, onComplete }: Props) {
   const { speak, supported } = useSpeech()
   const { playCorrect, playWrong } = useSoundEffects()
   const [picked, setPicked] = useState<string | null>(null)
@@ -73,7 +74,7 @@ export default function WordExercise({ letter, options, onComplete }: Props) {
                     : 'bg-white text-violet-700 hover:bg-violet-50'
               } ${shakeKey === opt.letter ? 'animate-shake' : ''}`}
             >
-              {opt.letter}
+              {glyphFor(opt, lowercase)}
             </KidButton>
           )
         })}
@@ -81,7 +82,7 @@ export default function WordExercise({ letter, options, onComplete }: Props) {
 
       {picked && (
         <p className="animate-pop text-2xl font-extrabold text-emerald-600">
-          {word.word} започва с {letter.letter}! 🎉
+          {word.word} започва с {glyphFor(letter, lowercase)}! 🎉
         </p>
       )}
     </div>
