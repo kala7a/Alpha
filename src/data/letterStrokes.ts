@@ -65,7 +65,7 @@ export const LETTER_STROKES: Record<string, Stroke[]> = {
     [{ x: 85, y: 15 }, { x: 50, y: 42 }],
     [{ x: 50, y: 58 }, { x: 85, y: 85 }],
   ],
-  З: [arc(42, 30, 22, 18, -40, 190, 7), arc(42, 70, 22, 18, -190, 40, 7)],
+  З: [arc(40, 32, 20, 18, -100, 100, 7), arc(40, 68, 20, 18, -100, 100, 7)],
   И: [
     [{ x: 25, y: 12 }, { x: 25, y: 88 }],
     [{ x: 25, y: 88 }, { x: 75, y: 12 }],
@@ -148,9 +148,13 @@ export const LETTER_STROKES: Record<string, Stroke[]> = {
     [{ x: 86, y: 85 }, { x: 86, y: 95 }],
   ],
   Ъ: [
-    [{ x: 25, y: 12 }, { x: 25, y: 88 }],
-    [{ x: 25, y: 12 }, { x: 45, y: 12 }],
-    arc(25, 68, 22, 18, -80, 90, 7),
+    [{ x: 22, y: 12 }, { x: 22, y: 88 }],
+    [{ x: 22, y: 12 }, { x: 42, y: 12 }],
+    // Loop deliberately smaller and lower than Ь's — at the guide's thick
+    // stroke width, a loop sized/placed like Б's or Ь's made Ъ render as a
+    // near-duplicate of Б instead of a recognizably different hard-sign
+    // shape.
+    arc(22, 76, 16, 13, -80, 90, 7),
   ],
   Ь: [
     [{ x: 25, y: 12 }, { x: 25, y: 88 }],
