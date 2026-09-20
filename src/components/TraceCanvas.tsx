@@ -56,7 +56,12 @@ export default function TraceCanvas({ letter, resetKey, onCoverageChange }: Prop
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const inkCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const maskRef = useRef<Uint32Array>(new Uint32Array())
-  const drawingRef = useRef(false)
+  // Only this one pointer is currently drawing — a second, simultaneous
+  // touch (a sibling's finger, a resting hand) is ignored outright rather
+  // than tracked alongside it. Without this, a second finger touching down
+  // overwrites lastPointRef with its own position, and the next move from
+  // *either* finger draws a stray line connecting the two touch points.
+  const activePointerIdRef = useRef<number | null>(null)
   const lastPointRef = useRef<{ x: number; y: number } | null>(null)
   const [hasInk, setHasInk] = useState(false)
 
@@ -134,8 +139,9 @@ export default function TraceCanvas({ letter, resetKey, onCoverageChange }: Prop
   }
 
   function handlePointerDown(e: React.PointerEvent<HTMLCanvasElement>) {
+    if (activePointerIdRef.current !== null) return // already drawing with another finger
+    activePointerIdRef.current = e.pointerId
     ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
-    drawingRef.current = true
     setHasInk(true)
     const p = toPoint(e)
     lastPointRef.current = p
@@ -143,15 +149,15 @@ export default function TraceCanvas({ letter, resetKey, onCoverageChange }: Prop
   }
 
   function handlePointerMove(e: React.PointerEvent<HTMLCanvasElement>) {
-    if (!drawingRef.current) return
+    if (e.pointerId !== activePointerIdRef.current) return
     const p = toPoint(e)
     if (lastPointRef.current) strokeSegment(lastPointRef.current, p)
     lastPointRef.current = p
   }
 
-  function handlePointerUp() {
-    if (!drawingRef.current) return
-    drawingRef.current = false
+  function handlePointerUp(e: React.PointerEvent<HTMLCanvasElement>) {
+    if (e.pointerId !== activePointerIdRef.current) return
+    activePointerIdRef.current = null
     lastPointRef.current = null
     onCoverageChange(computeCoverage())
   }
