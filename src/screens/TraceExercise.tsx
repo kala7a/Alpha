@@ -9,11 +9,12 @@ import { useSoundEffects } from '../hooks/useSoundEffects'
 interface Props {
   letter: BgLetter
   cursive: boolean
+  lowercase: boolean
   onComplete: (correct: boolean) => void
 }
 
-export default function TraceExercise({ letter, cursive, onComplete }: Props) {
-  const glyph = glyphFor(letter, cursive)
+export default function TraceExercise({ letter, cursive, lowercase, onComplete }: Props) {
+  const glyph = glyphFor(letter, lowercase)
   const { speak, supported } = useSpeech()
   const { playCorrect } = useSoundEffects()
   const [coverage, setCoverage] = useState(0)
@@ -55,7 +56,7 @@ export default function TraceExercise({ letter, cursive, onComplete }: Props) {
       </KidButton>
 
       <div className="flex w-full flex-1 items-center justify-center py-1">
-        <TraceCanvas letter={glyph} resetKey={0} onCoverageChange={setCoverage} />
+        <TraceCanvas letter={glyph} cursive={cursive} resetKey={0} onCoverageChange={setCoverage} />
       </div>
 
       <div className="flex w-full max-w-xs items-center gap-2">

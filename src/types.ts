@@ -11,6 +11,8 @@ export type Difficulty = 'easy' | 'hard'
  */
 interface RoundScript {
   cursive: boolean
+  /** Handwritten rounds teach both cases; printed rounds are capitals only. */
+  lowercase: boolean
 }
 
 export interface TraceExercise extends RoundScript {

@@ -1,5 +1,3 @@
-import { CURSIVE_STROKES } from './cursiveStrokes'
-
 export interface Point {
   x: number
   y: number
@@ -221,5 +219,11 @@ const CAPITALS: Record<string, Stroke[]> = {
     [{ x: 40, y: 56 }, { x: 18, y: 88 }],
   ],
 }
-/** Keyed by the glyph itself, so print capitals and cursive both look up directly. */
-export const LETTER_STROKES: Record<string, Stroke[]> = { ...CAPITALS, ...CURSIVE_STROKES }
+/**
+ * Printed letters, keyed by glyph. Capitals only — the printed small letters
+ * were dropped once handwriting replaced them, since most were just their
+ * capital scaled down. Kept separate from the handwritten set rather than
+ * merged: both are keyed by the same characters, so one map would silently
+ * overwrite the other.
+ */
+export const PRINT_STROKES: Record<string, Stroke[]> = CAPITALS

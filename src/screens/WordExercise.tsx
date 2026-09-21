@@ -9,10 +9,11 @@ interface Props {
   letter: BgLetter
   options: BgLetter[]
   cursive: boolean
+  lowercase: boolean
   onComplete: (correctFirstTry: boolean) => void
 }
 
-export default function WordExercise({ letter, options, cursive, onComplete }: Props) {
+export default function WordExercise({ letter, options, cursive, lowercase, onComplete }: Props) {
   const { speak, supported } = useSpeech()
   const { playCorrect, playWrong } = useSoundEffects()
   const [picked, setPicked] = useState<string | null>(null)
@@ -76,7 +77,7 @@ export default function WordExercise({ letter, options, cursive, onComplete }: P
                     : 'bg-white text-violet-700 hover:bg-violet-50'
               } ${shakeKey === opt.letter ? 'animate-shake' : ''}`}
             >
-              {glyphFor(opt, cursive)}
+              {glyphFor(opt, lowercase)}
             </KidButton>
           )
         })}
@@ -84,7 +85,7 @@ export default function WordExercise({ letter, options, cursive, onComplete }: P
 
       {picked && (
         <p className="animate-pop text-2xl font-extrabold text-emerald-600">
-          {word.word} започва с {glyphFor(letter, cursive)}! 🎉
+          {word.word} започва с {glyphFor(letter, lowercase)}! 🎉
         </p>
       )}
     </div>

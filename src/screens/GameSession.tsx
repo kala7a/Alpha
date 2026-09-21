@@ -43,13 +43,19 @@ export default function GameSession({ difficulty, onFinish }: Props) {
 
       <div key={index} className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         {exercise.type === 'trace' && (
-          <TraceExercise letter={exercise.letter} cursive={exercise.cursive} onComplete={handleRoundComplete} />
+          <TraceExercise
+            letter={exercise.letter}
+            cursive={exercise.cursive}
+            lowercase={exercise.lowercase}
+            onComplete={handleRoundComplete}
+          />
         )}
         {exercise.type === 'choice' && (
           <ChoiceExercise
             letter={exercise.letter}
             options={exercise.options}
             cursive={exercise.cursive}
+            lowercase={exercise.lowercase}
             onComplete={handleRoundComplete}
           />
         )}
@@ -58,6 +64,7 @@ export default function GameSession({ difficulty, onFinish }: Props) {
             letter={exercise.letter}
             options={exercise.options}
             cursive={exercise.cursive}
+            lowercase={exercise.lowercase}
             onComplete={handleRoundComplete}
           />
         )}

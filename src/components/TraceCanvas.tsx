@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import KidButton from './KidButton'
-import { LETTER_STROKES, type Point, type Stroke } from '../data/letterStrokes'
+import { PRINT_STROKES, type Point, type Stroke } from '../data/letterStrokes'
+import { CURSIVE_STROKES } from '../data/cursiveStrokes'
 
 const SIZE = 320
 const INK_WIDTH = 26
@@ -19,6 +20,8 @@ const MIN_TO_FINISH = 0.15
 
 interface Props {
   letter: string
+  /** Trace the handwritten form of the letter rather than the printed one. */
+  cursive: boolean
   /** Bumped by the parent to force a redraw/reset when moving to a new letter. */
   resetKey: number
   onCoverageChange: (coverage: number) => void
@@ -28,8 +31,8 @@ export interface TraceCanvasHandle {
   clear: () => void
 }
 
-function scaledStrokes(letter: string): Stroke[] {
-  const strokes = LETTER_STROKES[letter] ?? []
+function scaledStrokes(letter: string, cursive: boolean): Stroke[] {
+  const strokes = (cursive ? CURSIVE_STROKES : PRINT_STROKES)[letter] ?? []
   return strokes.map((stroke) => stroke.map((p) => ({ x: (p.x / 100) * SIZE, y: (p.y / 100) * SIZE })))
 }
 
@@ -41,22 +44,22 @@ function strokePath(ctx: CanvasRenderingContext2D, points: Point[]) {
   ctx.stroke()
 }
 
-function drawStrokes(ctx: CanvasRenderingContext2D, letter: string, color: string, width: number) {
+function drawStrokes(ctx: CanvasRenderingContext2D, letter: string, cursive: boolean, color: string, width: number) {
   ctx.strokeStyle = color
   ctx.lineWidth = width
   ctx.lineCap = 'round'
   ctx.lineJoin = 'round'
-  for (const stroke of scaledStrokes(letter)) strokePath(ctx, stroke)
+  for (const stroke of scaledStrokes(letter, cursive)) strokePath(ctx, stroke)
 }
 
 /** Pixel indices (x + y*SIZE, not byte offsets) making up the target letter shape. */
-function buildMask(letter: string): Uint32Array {
+function buildMask(letter: string, cursive: boolean): Uint32Array {
   const off = document.createElement('canvas')
   off.width = SIZE
   off.height = SIZE
   const ctx = off.getContext('2d')!
   ctx.clearRect(0, 0, SIZE, SIZE)
-  drawStrokes(ctx, letter, '#000', GUIDE_WIDTH)
+  drawStrokes(ctx, letter, cursive, '#000', GUIDE_WIDTH)
   const { data } = ctx.getImageData(0, 0, SIZE, SIZE)
   const indices: number[] = []
   for (let i = 0; i < data.length; i += 4) {
@@ -66,9 +69,9 @@ function buildMask(letter: string): Uint32Array {
 }
 
 /** Draws the light guide letter behind whatever ink the child has painted so far. */
-function drawGuide(ctx: CanvasRenderingContext2D, letter: string) {
+function drawGuide(ctx: CanvasRenderingContext2D, letter: string, cursive: boolean) {
   ctx.clearRect(0, 0, SIZE, SIZE)
-  drawStrokes(ctx, letter, '#e9e3ff', GUIDE_WIDTH)
+  drawStrokes(ctx, letter, cursive, '#e9e3ff', GUIDE_WIDTH)
 }
 
 /** Length of a point up to a given fraction of the stroke's total length. */
@@ -96,7 +99,7 @@ function pointAlong(points: Point[], t: number): Point[] {
   return result
 }
 
-export default function TraceCanvas({ letter, resetKey, onCoverageChange }: Props) {
+export default function TraceCanvas({ letter, cursive, resetKey, onCoverageChange }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const demoCanvasRef = useRef<HTMLCanvasElement>(null)
   const inkCanvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -116,7 +119,7 @@ export default function TraceCanvas({ letter, resetKey, onCoverageChange }: Prop
     if (!canvas) return
     const ctx = canvas.getContext('2d')!
     demoCancelledRef.current = false
-    const strokes = scaledStrokes(letter)
+    const strokes = scaledStrokes(letter, cursive)
     ctx.clearRect(0, 0, SIZE, SIZE)
 
     function renderFrame(completedCount: number, currentPoints: Point[] | null) {
@@ -164,14 +167,14 @@ export default function TraceCanvas({ letter, resetKey, onCoverageChange }: Prop
     canvas.height = SIZE
     demoCanvas.width = SIZE
     demoCanvas.height = SIZE
-    drawGuide(canvas.getContext('2d')!, letter)
+    drawGuide(canvas.getContext('2d')!, letter, cursive)
 
     const ink = document.createElement('canvas')
     ink.width = SIZE
     ink.height = SIZE
     inkCanvasRef.current = ink
 
-    maskRef.current = buildMask(letter)
+    maskRef.current = buildMask(letter, cursive)
     setHasInk(false)
     onCoverageChange(0)
 
@@ -181,7 +184,7 @@ export default function TraceCanvas({ letter, resetKey, onCoverageChange }: Prop
       stopDemo()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [letter, resetKey])
+  }, [letter, cursive, resetKey])
 
   function computeCoverage() {
     const ink = inkCanvasRef.current
@@ -265,7 +268,7 @@ export default function TraceCanvas({ letter, resetKey, onCoverageChange }: Prop
   function handleClear() {
     const canvas = canvasRef.current
     if (!canvas) return
-    drawGuide(canvas.getContext('2d')!, letter)
+    drawGuide(canvas.getContext('2d')!, letter, cursive)
     const ink = inkCanvasRef.current
     if (ink) ink.getContext('2d')!.clearRect(0, 0, SIZE, SIZE)
     setHasInk(false)
