@@ -1,4 +1,5 @@
 import { CURSIVE_STROKES } from '../data/cursiveStrokes'
+import { svgPath } from '../data/strokePath'
 
 interface Props {
   glyph: string
@@ -40,7 +41,7 @@ export default function CursiveGlyph({ glyph, className }: Props) {
       {strokes.map((stroke, i) => (
         <path
           key={i}
-          d={stroke.map((p, j) => `${j ? 'L' : 'M'}${p.x} ${p.y}`).join(' ')}
+          d={svgPath(stroke, true)}
           fill="none"
           stroke="currentColor"
           strokeWidth={PEN}

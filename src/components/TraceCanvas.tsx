@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import KidButton from './KidButton'
 import { PRINT_STROKES, type Point, type Stroke } from '../data/letterStrokes'
 import { CURSIVE_STROKES } from '../data/cursiveStrokes'
+import { tracePath } from '../data/strokePath'
 
 const SIZE = 320
 // The handwritten letters are drawn with a finer pen than the printed ones.
@@ -39,11 +40,9 @@ function scaledStrokes(letter: string, cursive: boolean): Stroke[] {
   return strokes.map((stroke) => stroke.map((p) => ({ x: (p.x / 100) * SIZE, y: (p.y / 100) * SIZE })))
 }
 
-function strokePath(ctx: CanvasRenderingContext2D, points: Point[]) {
+function strokePath(ctx: CanvasRenderingContext2D, points: Point[], smooth: boolean) {
   if (points.length === 0) return
-  ctx.beginPath()
-  ctx.moveTo(points[0].x, points[0].y)
-  for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y)
+  tracePath(ctx, points, smooth)
   ctx.stroke()
 }
 
@@ -52,7 +51,20 @@ function drawStrokes(ctx: CanvasRenderingContext2D, letter: string, cursive: boo
   ctx.lineWidth = width
   ctx.lineCap = 'round'
   ctx.lineJoin = 'round'
-  for (const stroke of scaledStrokes(letter, cursive)) strokePath(ctx, stroke)
+  for (const stroke of scaledStrokes(letter, cursive)) strokePath(ctx, stroke, cursive)
+}
+
+/**
+ * Give a canvas a backing store at the screen's real pixel density. Without
+ * it the letter is drawn at 320px and stretched by the browser to whatever
+ * the phone's pixels actually are, which is what makes the guide's edges
+ * look chewed. The transform keeps every other coordinate in box units.
+ */
+function sizeToScreen(canvas: HTMLCanvasElement) {
+  const dpr = Math.min(3, Math.max(1, Math.round(window.devicePixelRatio || 1)))
+  canvas.width = SIZE * dpr
+  canvas.height = SIZE * dpr
+  canvas.getContext('2d')!.setTransform(dpr, 0, 0, dpr, 0, 0)
 }
 
 /** Pixel indices (x + y*SIZE, not byte offsets) making up the target letter shape. */
@@ -131,8 +143,8 @@ export default function TraceCanvas({ letter, cursive, resetKey, onCoverageChang
       ctx.lineWidth = pens(cursive).demo
       ctx.lineCap = 'round'
       ctx.lineJoin = 'round'
-      for (let i = 0; i < completedCount; i++) strokePath(ctx, strokes[i])
-      if (currentPoints) strokePath(ctx, currentPoints)
+      for (let i = 0; i < completedCount; i++) strokePath(ctx, strokes[i], cursive)
+      if (currentPoints) strokePath(ctx, currentPoints, cursive)
     }
 
     let index = 0
@@ -166,10 +178,8 @@ export default function TraceCanvas({ letter, cursive, resetKey, onCoverageChang
     const canvas = canvasRef.current
     const demoCanvas = demoCanvasRef.current
     if (!canvas || !demoCanvas) return
-    canvas.width = SIZE
-    canvas.height = SIZE
-    demoCanvas.width = SIZE
-    demoCanvas.height = SIZE
+    sizeToScreen(canvas)
+    sizeToScreen(demoCanvas)
     drawGuide(canvas.getContext('2d')!, letter, cursive)
 
     const ink = document.createElement('canvas')
