@@ -4,9 +4,12 @@ import { PRINT_STROKES, type Point, type Stroke } from '../data/letterStrokes'
 import { CURSIVE_STROKES } from '../data/cursiveStrokes'
 
 const SIZE = 320
-const INK_WIDTH = 26
-const GUIDE_WIDTH = 40
-const DEMO_WIDTH = 16
+// The handwritten letters are drawn with a finer pen than the printed ones.
+// Cursive keeps far tighter loops — the bowls of ф, the eye of б — and the
+// printed letters' pen closes them into blobs.
+const PRINT_PENS = { guide: 40, ink: 26, demo: 16 }
+const CURSIVE_PENS = { guide: 33, ink: 21, demo: 13 }
+const pens = (cursive: boolean) => (cursive ? CURSIVE_PENS : PRINT_PENS)
 const DEMO_COLOR = '#fb923c'
 const DEMO_STROKE_MS = 380
 const DEMO_PAUSE_MS = 140
@@ -59,7 +62,7 @@ function buildMask(letter: string, cursive: boolean): Uint32Array {
   off.height = SIZE
   const ctx = off.getContext('2d')!
   ctx.clearRect(0, 0, SIZE, SIZE)
-  drawStrokes(ctx, letter, cursive, '#000', GUIDE_WIDTH)
+  drawStrokes(ctx, letter, cursive, '#000', pens(cursive).guide)
   const { data } = ctx.getImageData(0, 0, SIZE, SIZE)
   const indices: number[] = []
   for (let i = 0; i < data.length; i += 4) {
@@ -71,7 +74,7 @@ function buildMask(letter: string, cursive: boolean): Uint32Array {
 /** Draws the light guide letter behind whatever ink the child has painted so far. */
 function drawGuide(ctx: CanvasRenderingContext2D, letter: string, cursive: boolean) {
   ctx.clearRect(0, 0, SIZE, SIZE)
-  drawStrokes(ctx, letter, cursive, '#e9e3ff', GUIDE_WIDTH)
+  drawStrokes(ctx, letter, cursive, '#e9e3ff', pens(cursive).guide)
 }
 
 /** Length of a point up to a given fraction of the stroke's total length. */
@@ -125,7 +128,7 @@ export default function TraceCanvas({ letter, cursive, resetKey, onCoverageChang
     function renderFrame(completedCount: number, currentPoints: Point[] | null) {
       ctx.clearRect(0, 0, SIZE, SIZE)
       ctx.strokeStyle = DEMO_COLOR
-      ctx.lineWidth = DEMO_WIDTH
+      ctx.lineWidth = pens(cursive).demo
       ctx.lineCap = 'round'
       ctx.lineJoin = 'round'
       for (let i = 0; i < completedCount; i++) strokePath(ctx, strokes[i])
@@ -231,7 +234,7 @@ export default function TraceCanvas({ letter, cursive, resetKey, onCoverageChang
     for (const ctx of [visible, ink]) {
       ctx.lineCap = 'round'
       ctx.lineJoin = 'round'
-      ctx.lineWidth = INK_WIDTH
+      ctx.lineWidth = pens(cursive).ink
       ctx.strokeStyle = ctx === visible ? '#ff3d9a' : '#000'
       ctx.beginPath()
       ctx.moveTo(from.x, from.y)
