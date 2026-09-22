@@ -37,6 +37,11 @@ export function buildSession(difficulty: Difficulty): Exercise[] {
     const roll = Math.random()
     const type = roll < 1 / 3 ? 'trace' : roll < 2 / 3 ? 'choice' : 'word'
     const cursive = difficulty === 'hard'
+    // Handwritten capitals and small letters are genuinely different shapes
+    // (А against а, not just a size), so hard alternates between them. Ь is
+    // the exception: Bulgarian writes no capital ь, and the chart the
+    // handwritten letters come from has no such glyph to trace.
+    const lowercase = cursive && (letter.letter === 'Ь' || Math.random() < 0.5)
 
     if (type === 'choice') {
       const exercise: ChoiceExercise = {
@@ -44,6 +49,7 @@ export function buildSession(difficulty: Difficulty): Exercise[] {
         letter,
         options: pickOptions(letter, choicePool, 4),
         cursive,
+        lowercase,
       }
       return exercise
     }
@@ -53,10 +59,11 @@ export function buildSession(difficulty: Difficulty): Exercise[] {
         letter,
         options: pickOptions(letter, wordPool, 2),
         cursive,
+        lowercase,
       }
       return exercise
     }
-    const exercise: TraceExercise = { type: 'trace', letter, cursive }
+    const exercise: TraceExercise = { type: 'trace', letter, cursive, lowercase }
     return exercise
   })
 }

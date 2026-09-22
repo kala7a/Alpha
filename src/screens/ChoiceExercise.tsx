@@ -4,15 +4,17 @@ import { buildSpokenPhrase } from '../data/spokenPhrase'
 import { useSpeech } from '../hooks/useSpeech'
 import { useSoundEffects } from '../hooks/useSoundEffects'
 import KidButton from '../components/KidButton'
+import CursiveGlyph from '../components/CursiveGlyph'
 
 interface Props {
   letter: BgLetter
   options: BgLetter[]
   cursive: boolean
+  lowercase: boolean
   onComplete: (correctFirstTry: boolean) => void
 }
 
-export default function ChoiceExercise({ letter, options, cursive, onComplete }: Props) {
+export default function ChoiceExercise({ letter, options, cursive, lowercase, onComplete }: Props) {
   const { speak, supported } = useSpeech()
   const { playCorrect, playWrong } = useSoundEffects()
   const [picked, setPicked] = useState<string | null>(null)
@@ -66,9 +68,7 @@ export default function ChoiceExercise({ letter, options, cursive, onComplete }:
               key={opt.letter}
               onPress={() => handlePick(opt)}
               disabled={picked !== null || isWrong}
-              className={`aspect-square rounded-3xl text-6xl font-extrabold shadow-md transition active:scale-95 ${
-                cursive ? 'font-hand' : ''
-              } ${
+              className={`flex aspect-square items-center justify-center rounded-3xl text-6xl font-extrabold shadow-md transition active:scale-95 ${
                 isPicked
                   ? 'animate-pop bg-emerald-400 text-emerald-900'
                   : isWrong
@@ -76,7 +76,11 @@ export default function ChoiceExercise({ letter, options, cursive, onComplete }:
                     : 'bg-white text-violet-700 hover:bg-violet-50'
               } ${shakeKey === opt.letter ? 'animate-shake' : ''}`}
             >
-              {glyphFor(opt, cursive)}
+              {cursive ? (
+                <CursiveGlyph glyph={glyphFor(opt, lowercase)} className="h-3/4" />
+              ) : (
+                glyphFor(opt, lowercase)
+              )}
             </KidButton>
           )
         })}

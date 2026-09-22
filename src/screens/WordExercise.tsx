@@ -4,15 +4,17 @@ import { buildWordPhrase } from '../data/spokenPhrase'
 import { useSpeech } from '../hooks/useSpeech'
 import { useSoundEffects } from '../hooks/useSoundEffects'
 import KidButton from '../components/KidButton'
+import CursiveGlyph from '../components/CursiveGlyph'
 
 interface Props {
   letter: BgLetter
   options: BgLetter[]
   cursive: boolean
+  lowercase: boolean
   onComplete: (correctFirstTry: boolean) => void
 }
 
-export default function WordExercise({ letter, options, cursive, onComplete }: Props) {
+export default function WordExercise({ letter, options, cursive, lowercase, onComplete }: Props) {
   const { speak, supported } = useSpeech()
   const { playCorrect, playWrong } = useSoundEffects()
   const [picked, setPicked] = useState<string | null>(null)
@@ -66,9 +68,7 @@ export default function WordExercise({ letter, options, cursive, onComplete }: P
               key={opt.letter}
               onPress={() => handlePick(opt)}
               disabled={picked !== null || isWrong}
-              className={`aspect-square rounded-3xl text-6xl font-extrabold shadow-md transition active:scale-95 ${
-                cursive ? 'font-hand' : ''
-              } ${
+              className={`flex aspect-square items-center justify-center rounded-3xl text-6xl font-extrabold shadow-md transition active:scale-95 ${
                 isPicked
                   ? 'animate-pop bg-emerald-400 text-emerald-900'
                   : isWrong
@@ -76,15 +76,25 @@ export default function WordExercise({ letter, options, cursive, onComplete }: P
                     : 'bg-white text-violet-700 hover:bg-violet-50'
               } ${shakeKey === opt.letter ? 'animate-shake' : ''}`}
             >
-              {glyphFor(opt, cursive)}
+              {cursive ? (
+                <CursiveGlyph glyph={glyphFor(opt, lowercase)} className="h-3/4" />
+              ) : (
+                glyphFor(opt, lowercase)
+              )}
             </KidButton>
           )
         })}
       </div>
 
       {picked && (
-        <p className="animate-pop text-2xl font-extrabold text-emerald-600">
-          {word.word} започва с {glyphFor(letter, cursive)}! 🎉
+        <p className="animate-pop flex items-center gap-1 text-2xl font-extrabold text-emerald-600">
+          {word.word} започва с
+          {cursive ? (
+            <CursiveGlyph glyph={glyphFor(letter, lowercase)} className="h-[1.4em]" />
+          ) : (
+            glyphFor(letter, lowercase)
+          )}
+          ! 🎉
         </p>
       )}
     </div>
