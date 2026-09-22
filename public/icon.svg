@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Азъ Веди: the first two letters of the Glagolitic alphabet. The same
+       two paths as src/components/Logo.tsx — change one and change the other. -->
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#8b5cf6" />
@@ -7,5 +9,8 @@
     </linearGradient>
   </defs>
   <rect width="512" height="512" rx="112" fill="url(#bg)" />
-  <text x="256" y="330" text-anchor="middle" font-family="'Baloo 2', 'Comic Sans MS', sans-serif" font-weight="800" font-size="300" fill="#ffffff">А</text>
+  <g fill="none" stroke="#ffffff" stroke-width="36" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M121.88 149 L121.88 363 M29.47 226.82 L214.29 226.82 M29.47 226.82 L29.47 275.45 M214.29 226.82 L214.29 275.45" />
+    <path d="M244.29 230.75 Q247.62 206.45 255.72 196.08 Q263.82 185.72 275.38 182.86 Q286.93 180 293.84 182.26 Q300.75 184.53 308.26 195.49 Q315.76 206.45 321.48 258.86 Q327.2 311.27 338.16 321.04 Q349.11 330.81 361.74 331.4 Q374.37 332 380.09 330.21 Q385.8 328.43 393.9 317.59 Q402 306.75 408.32 253.14 Q414.63 199.54 423.21 191.55 Q431.79 183.57 447.99 184.05 Q464.19 184.53 470.5 192.03 Q476.81 199.54 479.67 211.09 Q482.53 222.65 476.22 241.59 Q469.9 260.53 460.14 265.77 Q450.37 271.01 431.9 264.1 Q413.44 257.19 406.53 260.53 M244.29 230.75 Q250 251.47 259.18 259.45 Q268.35 267.44 283.36 268.63 Q298.37 269.82 317.9 260.53" />
+  </g>
 </svg>
