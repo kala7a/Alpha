@@ -50,7 +50,7 @@ export default function HomeScreen({ onStart, speechSupported, hasBulgarianVoice
       </div>
 
       <div className="z-10 flex flex-col items-center gap-2">
-        <h1 className="text-5xl font-extrabold text-white drop-shadow-md sm:text-6xl">Букви и Звуци</h1>
+        <h1 className="text-5xl font-extrabold text-white drop-shadow-md sm:text-6xl">Азъ Веди</h1>
         <p className="text-xl font-semibold text-white/90">Учим българската азбука, играейки!</p>
       </div>
 
