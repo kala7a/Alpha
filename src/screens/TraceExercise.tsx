@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import TraceCanvas, { DONE_THRESHOLD, MIN_TO_FINISH } from '../components/TraceCanvas'
 import KidButton from '../components/KidButton'
+import CursiveGlyph from '../components/CursiveGlyph'
 import { glyphFor, pickWordOption, type BgLetter } from '../data/letters'
 import { buildSpokenPhrase } from '../data/spokenPhrase'
 import { useSpeech } from '../hooks/useSpeech'
@@ -52,7 +53,7 @@ export default function TraceExercise({ letter, cursive, lowercase, onComplete }
         disabled={!supported}
         className="flex items-center gap-2 rounded-full bg-white px-5 py-2 text-xl font-extrabold text-violet-700 shadow-md active:scale-95 disabled:opacity-50"
       >
-        🔊 <span className={cursive ? 'font-hand' : ''}>{glyph}</span>
+        🔊 {cursive ? <CursiveGlyph glyph={glyph} className="h-[1.6em]" /> : <span>{glyph}</span>}
       </KidButton>
 
       <div className="flex w-full flex-1 items-center justify-center py-1">
