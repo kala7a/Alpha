@@ -26,13 +26,7 @@ interface Props {
   letter: string
   /** Trace the handwritten form of the letter rather than the printed one. */
   cursive: boolean
-  /** Bumped by the parent to force a redraw/reset when moving to a new letter. */
-  resetKey: number
   onCoverageChange: (coverage: number) => void
-}
-
-export interface TraceCanvasHandle {
-  clear: () => void
 }
 
 function scaledStrokes(letter: string, cursive: boolean): Stroke[] {
@@ -114,12 +108,15 @@ function pointAlong(points: Point[], t: number): Point[] {
   return result
 }
 
-export default function TraceCanvas({ letter, cursive, resetKey, onCoverageChange }: Props) {
+export default function TraceCanvas({ letter, cursive, onCoverageChange }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const demoCanvasRef = useRef<HTMLCanvasElement>(null)
   const inkCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const maskRef = useRef<Uint32Array>(new Uint32Array())
-  const demoCancelledRef = useRef(false)
+  // Bumped to cancel a running demo. A plain cancelled flag isn't enough:
+  // "Изчисти" restarts the demo right after a touch stopped it, and resetting
+  // the flag let the old run's pending frame carry on alongside the new one.
+  const demoRunRef = useRef(0)
   // Only this one pointer is currently drawing — a second, simultaneous
   // touch (a sibling's finger, a resting hand) is ignored outright rather
   // than tracked alongside it. Without this, a second finger touching down
@@ -133,7 +130,8 @@ export default function TraceCanvas({ letter, cursive, resetKey, onCoverageChang
     const canvas = demoCanvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')!
-    demoCancelledRef.current = false
+    const run = ++demoRunRef.current
+    const cancelled = () => demoRunRef.current !== run
     const strokes = scaledStrokes(letter, cursive)
     ctx.clearRect(0, 0, SIZE, SIZE)
 
@@ -149,11 +147,11 @@ export default function TraceCanvas({ letter, cursive, resetKey, onCoverageChang
 
     let index = 0
     function playNext() {
-      if (demoCancelledRef.current || index >= strokes.length) return
+      if (cancelled() || index >= strokes.length) return
       const points = strokes[index]
       const start = performance.now()
       function frame(now: number) {
-        if (demoCancelledRef.current) return
+        if (cancelled()) return
         const t = Math.min(1, (now - start) / DEMO_STROKE_MS)
         renderFrame(index, pointAlong(points, t))
         if (t < 1) {
@@ -169,7 +167,7 @@ export default function TraceCanvas({ letter, cursive, resetKey, onCoverageChang
   }
 
   function stopDemo() {
-    demoCancelledRef.current = true
+    demoRunRef.current++
     const canvas = demoCanvasRef.current
     if (canvas) canvas.getContext('2d')!.clearRect(0, 0, SIZE, SIZE)
   }
@@ -185,6 +183,8 @@ export default function TraceCanvas({ letter, cursive, resetKey, onCoverageChang
     const ink = document.createElement('canvas')
     ink.width = SIZE
     ink.height = SIZE
+    // Read back on every lift of the finger to score coverage.
+    ink.getContext('2d', { willReadFrequently: true })
     inkCanvasRef.current = ink
 
     maskRef.current = buildMask(letter, cursive)
@@ -197,7 +197,7 @@ export default function TraceCanvas({ letter, cursive, resetKey, onCoverageChang
       stopDemo()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [letter, cursive, resetKey])
+  }, [letter, cursive])
 
   function computeCoverage() {
     const ink = inkCanvasRef.current

@@ -57,7 +57,7 @@ export default function TraceExercise({ letter, cursive, lowercase, onComplete }
       </KidButton>
 
       <div className="flex w-full flex-1 items-center justify-center py-1">
-        <TraceCanvas letter={glyph} cursive={cursive} resetKey={0} onCoverageChange={setCoverage} />
+        <TraceCanvas letter={glyph} cursive={cursive} onCoverageChange={setCoverage} />
       </div>
 
       <div className="flex w-full max-w-xs items-center gap-2">
