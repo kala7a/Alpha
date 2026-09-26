@@ -1,4 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- А with its guide and a line part way round it, as the game shows it.
+       The same geometry as src/components/Logo.tsx, on the tile and its
+       sheet of paper — change one and change the other. -->
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#8b5cf6" />
@@ -7,5 +10,10 @@
     </linearGradient>
   </defs>
   <rect width="512" height="512" rx="112" fill="url(#bg)" />
-  <text x="256" y="330" text-anchor="middle" font-family="'Baloo 2', 'Comic Sans MS', sans-serif" font-weight="800" font-size="300" fill="#ffffff">А</text>
+  <rect x="72" y="72" width="368" height="368" rx="78" fill="#ffffff" />
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M134 379.39 L256 128.61 L378 379.39 M174.67 291.28 L337.33 291.28" stroke="#e5dcff" stroke-width="67.8" />
+    <path d="M134 379.39 L256 128.61 L285.28 188.8" stroke="#fb923c" stroke-width="39" />
+  </g>
+  <circle cx="285.3" cy="188.8" r="28.8" fill="#f97316" />
 </svg>

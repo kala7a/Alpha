@@ -1,4 +1,7 @@
-# Букви и Звуци (Letters and Sounds)
+# Азъ Веди
+
+Named after the first two letters of the Glagolitic alphabet, азъ and
+вѣди — "I know".
 
 A small Duolingo-style learning game that teaches the Bulgarian Cyrillic
 alphabet to young children (built with a 5-year-old in mind). No backend,

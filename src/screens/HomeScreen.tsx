@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import KidButton from '../components/KidButton'
+import Logo from '../components/Logo'
 import { useFullscreen } from '../hooks/useFullscreen'
 import { useInstallPrompt } from '../hooks/useInstallPrompt'
 import type { Difficulty } from '../types'
@@ -43,16 +44,13 @@ export default function HomeScreen({ onStart, speechSupported, hasBulgarianVoice
         </span>
       ))}
 
-      <div className="animate-pop">
-        <div className="flex h-32 w-32 items-center justify-center rounded-full bg-white text-7xl font-extrabold text-violet-600 shadow-lg">
-          А
-        </div>
+      {/* The mark carries the name on its own — spelling it out underneath
+          as well only said the same thing twice. */}
+      <div className="animate-pop z-10 rounded-[2.25rem] bg-white p-5 shadow-lg">
+        <Logo className="h-24 w-auto" />
       </div>
 
-      <div className="z-10 flex flex-col items-center gap-2">
-        <h1 className="text-5xl font-extrabold text-white drop-shadow-md sm:text-6xl">Букви и Звуци</h1>
-        <p className="text-xl font-semibold text-white/90">Учим българската азбука, играейки!</p>
-      </div>
+      <p className="z-10 text-xl font-semibold text-white/90">Учим българската азбука, играейки!</p>
 
       <div className="z-10 flex w-full max-w-sm flex-col items-center gap-6">
         {!speechSupported && (
