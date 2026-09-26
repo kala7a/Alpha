@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback } from 'react'
 
 type AudioCtx = typeof AudioContext
 
@@ -7,17 +7,23 @@ function getCtor(): AudioCtx | null {
   return window.AudioContext ?? (window as unknown as { webkitAudioContext?: AudioCtx }).webkitAudioContext ?? null
 }
 
+// One context for the whole app. Every round mounts its own exercise screen,
+// and a context per mount was never closed — a session left ten of them
+// running, and browsers cap how many can be open at once.
+let sharedCtx: AudioContext | null = null
+
+function getCtx(): AudioContext | null {
+  const Ctor = getCtor()
+  if (!Ctor) return null
+  if (!sharedCtx) sharedCtx = new Ctor()
+  // Safari (and Chrome after a stretch in the background) hands back a
+  // suspended context, which plays nothing until resumed.
+  if (sharedCtx.state === 'suspended') sharedCtx.resume().catch(() => {})
+  return sharedCtx
+}
+
 /** Tiny synthesized chimes for correct/wrong feedback, no audio files needed. */
 export function useSoundEffects() {
-  const ctxRef = useRef<AudioContext | null>(null)
-
-  const getCtx = useCallback(() => {
-    const Ctor = getCtor()
-    if (!Ctor) return null
-    if (!ctxRef.current) ctxRef.current = new Ctor()
-    return ctxRef.current
-  }, [])
-
   const tone = useCallback(
     (freq: number, start: number, duration: number, ctx: AudioContext) => {
       const osc = ctx.createOscillator()
@@ -41,20 +47,20 @@ export function useSoundEffects() {
     tone(523.25, 0, 0.15, ctx) // C5
     tone(659.25, 0.12, 0.15, ctx) // E5
     tone(783.99, 0.24, 0.25, ctx) // G5
-  }, [getCtx, tone])
+  }, [tone])
 
   const playWrong = useCallback(() => {
     const ctx = getCtx()
     if (!ctx) return
     tone(220, 0, 0.2, ctx)
     tone(196, 0.15, 0.25, ctx)
-  }, [getCtx, tone])
+  }, [tone])
 
   const playTap = useCallback(() => {
     const ctx = getCtx()
     if (!ctx) return
     tone(440, 0, 0.08, ctx)
-  }, [getCtx, tone])
+  }, [tone])
 
   return { playCorrect, playWrong, playTap }
 }

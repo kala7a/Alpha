@@ -9,19 +9,23 @@ no AI — just a static React app.
 
 ## How it works
 
-A play session is a short queue of rounds mixing two exercise types:
+A play session is 10 rounds mixing three exercise types:
 
 1. **Trace** — the child traces a large guide letter on a canvas with a
-   finger (or mouse), while the letter's name is read aloud. Finishing a
-   trace always completes the round; how much of the letter got covered
-   only changes the celebration message, since grading a young child's
-   handwriting precisely wouldn't be fair.
+   finger (or mouse), after an animated demo of the stroke order, while the
+   letter's name is read aloud. Finishing a trace always completes the
+   round; how much of the letter got covered only changes the celebration
+   message, since grading a young child's handwriting precisely wouldn't be
+   fair.
 2. **Listen & choose** — a letter's name is read aloud and the child taps
    the matching letter out of 4 big options.
+3. **First letter** — a word is read aloud (with its emoji), and the child
+   picks which of 2 letters it starts with.
 
 At the end of the session the child sees a star rating (1–3 stars) and can
-play again. Session length (6 / 10 / 16 rounds) is picked from the home
-screen, and letters + exercise types are randomized each time.
+play again. The home screen picks the difficulty: **Лесно** uses printed
+capitals, **Трудно** uses the handwritten (ръкописни) letters, both capital
+and small. Letters and exercise types are randomized each time.
 
 Letter audio uses the browser's built-in `SpeechSynthesis` API with a
 Bulgarian voice when available (Chrome/Edge on most platforms). No audio
@@ -32,13 +36,16 @@ Web Audio API, also with no audio assets.
 
 - `src/data/letters.ts` — the 30-letter Bulgarian alphabet with an example
   word + emoji per letter.
+- `src/data/letterStrokes.ts`, `src/data/cursiveStrokes.ts` — stroke paths
+  for the printed and handwritten letters, used for tracing, the stroke
+  order demo and drawing the handwritten options.
 - `src/data/session.ts` — builds a randomized round queue for a session.
 - `src/hooks/useSpeech.ts` — Bulgarian text-to-speech wrapper.
 - `src/hooks/useSoundEffects.ts` — synthesized correct/wrong chimes.
-- `src/components/TraceCanvas.tsx` — the tracing canvas and coverage
-  detection (via an offscreen dilated letter mask).
+- `src/components/TraceCanvas.tsx` — the tracing canvas, stroke order demo
+  and coverage detection (via an offscreen letter mask).
 - `src/screens/` — `HomeScreen`, `GameSession`, `TraceExercise`,
-  `ChoiceExercise`, `ResultsScreen`.
+  `ChoiceExercise`, `WordExercise`, `ResultsScreen`.
 
 Adding a new exercise type later means adding a new entry to the
 `Exercise` union in `src/types.ts`, a case in `session.ts`, and a new
