@@ -46,8 +46,8 @@ export default function HomeScreen({ onStart, speechSupported, hasBulgarianVoice
 
       {/* The mark carries the name on its own — spelling it out underneath
           as well only said the same thing twice. */}
-      <div className="animate-pop z-10 rounded-[2.5rem] bg-white px-9 py-7 shadow-lg">
-        <Logo className="h-16 w-auto text-violet-600" />
+      <div className="animate-pop z-10 rounded-[2.25rem] bg-white p-5 shadow-lg">
+        <Logo className="h-24 w-auto" />
       </div>
 
       <p className="z-10 text-xl font-semibold text-white/90">Учим българската азбука, играейки!</p>
